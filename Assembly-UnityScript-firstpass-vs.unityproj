@@ -49,19 +49,7 @@
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\PlatformInputController.js" />
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonCamera.js" />
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\BlendAlpha.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\Add+1.shader" />
      <None Include="Assets\OpenNI\OpenNI.xml" />
-     <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\CoinShader.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\PackedBlend.shader" />
-     <None Include="Assets\Scripts\SpritePacker\README.txt" />
-     <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\Add+1.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\AddAlpha.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\SolidAlpha.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\AddSmooth+1.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\PackedCutout.shader" />
-     <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\COINPARTY README.txt" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\PackedAdd.shader" />
  <Reference Include="Assets\OpenNI\OpenNI.net">
  <HintPath>Assets\OpenNI\OpenNI.net.dll</HintPath>
  </Reference>

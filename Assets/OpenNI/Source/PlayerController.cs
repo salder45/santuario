@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour {
 	private const float ANGULO_ROTACION_EN_X=0.30f;
 	private const float ANGULO_ROTACION_EN_Y=0.20f;
 	private const float ANGULO_BLOQUEAR_EN_Y=0.30f;
+	private const float ANGULO_FRONTERA_Y_REGRESAR=0.05f;
 	
 	//punto de refrencia para avanzar/retroceder
 	private Point3D puntoInicial;
@@ -70,6 +71,7 @@ public class PlayerController : MonoBehaviour {
 					Quaternion q=SkeletonJointOrientationToQuaternion(ori);
 					RotaEnX(q.y);
 					RotaEnY(q.x);
+					
 				}
 			}
 		}
@@ -160,38 +162,23 @@ public class PlayerController : MonoBehaviour {
 	
 	//rota en y en base al x del cuaternion
 	void RotaEnY(float x){
-		GameObject camara=GameObject.Find("CameraPlayer");
+		GameObject camara=GameObject.Find("CuboCamara");
 		float rotacionCamaraX=camara.transform.rotation.x;
-		Debug.Log((x>-ANGULO_ROTACION_EN_Y));
 		if(x>-ANGULO_ROTACION_EN_Y&x<ANGULO_ROTACION_EN_Y){
-			camara.transform.rotation=new Quaternion(0f,0f,0f,0f);	
+			if(rotacionCamaraX>ANGULO_FRONTERA_Y_REGRESAR&rotacionCamaraX<-ANGULO_FRONTERA_Y_REGRESAR){
+				camara.transform.Rotate(new Vector3(0f,0f,0f));
+			}else if(rotacionCamaraX>=ANGULO_FRONTERA_Y_REGRESAR){
+				camara.transform.Rotate(new Vector3(-valorRotation,0f,0f));
+			}else if(rotacionCamaraX<=-ANGULO_FRONTERA_Y_REGRESAR){
+				camara.transform.Rotate(new Vector3(valorRotation,0f,0f));
+			}
 		}else //esta parte del codigo hace la rotacion
 		if(x<-(ANGULO_ROTACION_EN_Y-0.1f)&rotacionCamaraX<ANGULO_BLOQUEAR_EN_Y){
+			//rota hacia abajo
 			camara.transform.Rotate(new Vector3(valorRotation,0f,0f));
 		}else if(x>ANGULO_ROTACION_EN_Y&rotacionCamaraX>-ANGULO_BLOQUEAR_EN_Y){
+			//rota hacia arriba
 			camara.transform.Rotate(new Vector3(-valorRotation,0f,0f));
-		}
-		
-		
-		
-		
-		
-		/*
-		if(q.x>.20){
-			if(GameObject.Find("CuboCamara").transform.rotation.x<.25){
-				GameObject.Find("CuboCamara").transform.Rotate(new Vector3(valorPositivoRotacion,0f,0f));
-			}
-		}else if(q.x<-.20){
-			if(GameObject.Find("CuboCamara").transform.rotation.x>-.25){
-				GameObject.Find("CuboCamara").transform.Rotate(new Vector3(-valorNegativoRotacion,0f,0f));
-			}
-		}else{
-			Quaternion fromX =new Quaternion(GameObject.Find("CuboCamara").transform.rotation.x,0f,0f,GameObject.Find("CuboCamara").transform.rotation.w);
-			Quaternion toX =new Quaternion(0f,GameObject.Find("CuboCamara").transform.rotation.y,0f,transform.rotation.w);
-			//GameObject.Find("CuboCamara").transform.Rotate(Quaternion.Lerp(fromX, toX, Time.time * .001f));
-			//GameObject.Find("CuboCamara").transform.Rotate(Vector3((GameObject.Find("CuboCamara").rotation.x *-1)*2,0f,0f));				
-		}
-		*/
-		
+		}		
 	}
 }
