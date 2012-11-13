@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\OpenNI\Source\PlayerController.cs" />
      <Compile Include="Assets\Scripts\SpritePacker\CoinPartyExample\CoinParty.cs" />
      <Compile Include="Assets\Scripts\SpritePacker\ExplosionExample\ExplosionAnimator.cs" />
      <Compile Include="Assets\Scripts\SpritePacker\HSBColor.cs" />
@@ -53,6 +54,7 @@
      <Compile Include="Assets\Scripts\SpritePacker\SpritePackerAnimation.cs" />
      <None Include="Assets\Scripts\SpritePacker\Shaders\BlendAlpha.shader" />
      <None Include="Assets\Scripts\SpritePacker\Shaders\Add+1.shader" />
+     <None Include="Assets\OpenNI\OpenNI.xml" />
      <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\CoinShader.shader" />
      <None Include="Assets\Scripts\SpritePacker\Shaders\PackedBlend.shader" />
      <None Include="Assets\Scripts\SpritePacker\README.txt" />
@@ -65,6 +67,12 @@
      <None Include="Assets\Scripts\SpritePacker\Shaders\PackedAdd.shader" />
  <Reference Include="Library\ScriptAssemblies\Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
+ <Reference Include="Assets\OpenNI\OpenNI.net">
+ <HintPath>Assets\OpenNI\OpenNI.net.dll</HintPath>
+ </Reference>
+ <Reference Include="Assets\OpenNI\XnVNite.net">
+ <HintPath>Assets\OpenNI\XnVNite.net.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
