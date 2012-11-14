@@ -19,11 +19,13 @@ public class PlayerController : MonoBehaviour {
 	private string calibPose;
 	private float valorRotation=1f;
 	private bool shouldRun;
+	private int contador=0;
 	//constante del angulo de rotacion
 	private const float ANGULO_ROTACION_EN_X=0.30f;
 	private const float ANGULO_ROTACION_EN_Y=0.20f;
 	private const float ANGULO_BLOQUEAR_EN_Y=0.30f;
 	private const float ANGULO_FRONTERA_Y_REGRESAR=0.05f;
+	private const float DISTANCIA_MOVER=100f;
 	
 	//punto de refrencia para avanzar/retroceder
 	private Point3D puntoInicial;
@@ -68,10 +70,17 @@ public class PlayerController : MonoBehaviour {
 				if(this.skeletonCapability.IsTracking(user)){
 					//Debug.Log("Trackeando");
 					SkeletonJointOrientation ori=this.skeletonCapability.GetSkeletonJointOrientation(user,SkeletonJoint.Torso);
+					SkeletonJointPosition posicion=this.skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Torso);
 					Quaternion q=SkeletonJointOrientationToQuaternion(ori);
 					RotaEnX(q.y);
 					RotaEnY(q.x);
 					
+					if(contador==0){
+						this.puntoInicial=posicion.Position;
+					}else{
+						Mover(posicion.Position);
+					}					
+					contador=contador+1;
 				}
 			}
 		}
@@ -180,5 +189,15 @@ public class PlayerController : MonoBehaviour {
 			//rota hacia arriba
 			camara.transform.Rotate(new Vector3(-valorRotation,0f,0f));
 		}		
+	}
+	
+	void Mover(Point3D puntoActual){
+		//Avanzar
+		if(puntoActual.Z<puntoInicial.Z-DISTANCIA_MOVER){
+			transform.Translate(Vector3.forward*Time.deltaTime);
+		}else //Retroceder 
+		if(puntoActual.Z>puntoInicial.Z+DISTANCIA_MOVER){
+			transform.Translate(Vector3.back*Time.deltaTime);
+		}
 	}
 }
