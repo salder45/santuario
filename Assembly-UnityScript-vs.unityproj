@@ -44,22 +44,9 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\SpritePacker\ExplosionExample\Old Assets\Emit.js" />
-     <Compile Include="Assets\Scripts\SpritePacker\ExplosionExample\Old Assets\Explosion.js" />
-     <Compile Include="Assets\Scripts\SpritePacker\ExplosionExample\Old Assets\ExplosionStreamer.js" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\BlendAlpha.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\Add+1.shader" />
+     <Compile Include="Assets\Altar\FractalTexture.js" />
      <None Include="Assets\OpenNI\OpenNI.xml" />
-     <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\CoinShader.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\PackedBlend.shader" />
-     <None Include="Assets\Scripts\SpritePacker\README.txt" />
-     <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\Add+1.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\AddAlpha.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\SolidAlpha.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\AddSmooth+1.shader" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\PackedCutout.shader" />
-     <None Include="Assets\Scripts\SpritePacker\CoinPartyExample\COINPARTY README.txt" />
-     <None Include="Assets\Scripts\SpritePacker\Shaders\PackedAdd.shader" />
+     <None Include="Assets\smoke&amp;fire\Particle Sep-Alpha Blend.shader" />
  <Reference Include="Library\ScriptAssemblies\Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>

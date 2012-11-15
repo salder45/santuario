@@ -44,8 +44,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Plugins\Perlin.cs" />
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
      <None Include="Assets\OpenNI\OpenNI.xml" />
+     <None Include="Assets\smoke&amp;fire\Particle Sep-Alpha Blend.shader" />
  <Reference Include="Assets\OpenNI\OpenNI.net">
  <HintPath>Assets\OpenNI\OpenNI.net.dll</HintPath>
  </Reference>

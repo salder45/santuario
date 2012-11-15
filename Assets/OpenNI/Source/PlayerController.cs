@@ -179,13 +179,20 @@ public class PlayerController : MonoBehaviour {
 		}
 		
 		if(rotacionKinect.x<-(ANGULO_ROTACION_EN_Y-0.1f)){
-			//xCamara=(xCamara+valorRotation*CONSTANTE_ROTACION_VERTICAL)/2f;
+			xCamara=(xCamara+valorRotation*CONSTANTE_ROTACION_VERTICAL)/2f;
 		}else if(rotacionKinect.x>ANGULO_ROTACION_EN_Y){
-			//xCamara=(xCamara+valorRotation*-CONSTANTE_ROTACION_VERTICAL)/2f;
+			if(xCamara==0|xCamara>335f){
+				xCamara=xCamara-valorRotation;
+			}
+		}else if(rotacionKinect.x<ANGULO_ROTACION_EN_Y&&rotacionKinect.x>-(ANGULO_ROTACION_EN_Y-0.1f)){
+			if(xCamara<26f&&xCamara>1){
+				xCamara=xCamara-valorRotation;
+			}else if(xCamara>334f&xCamara<360f){
+				xCamara=xCamara+valorRotation;
+			}else{
+				xCamara=0f;
+			}
 		}
-		
-		
-		Debug.Log(xCamara);
 		if(isRotacionHorizontal){
 			transform.Rotate(new Vector3(xPlayer,yPlayer,zPlayer));
 		}else{
@@ -196,10 +203,10 @@ public class PlayerController : MonoBehaviour {
 	void Mover(Point3D puntoActual){
 		//Avanzar
 		if(puntoActual.Z<puntoInicial.Z-DISTANCIA_MOVER){
-			transform.Translate(Vector3.forward*Time.deltaTime*2f);
+			transform.Translate(Vector3.forward*Time.deltaTime*3f);
 		}else //Retroceder 
 		if(puntoActual.Z>puntoInicial.Z+DISTANCIA_MOVER){
-			transform.Translate(Vector3.back*Time.deltaTime*2f);
+			transform.Translate(Vector3.back*Time.deltaTime*3f);
 		}
 	}
 }

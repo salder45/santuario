@@ -7,6 +7,8 @@ Project("{6396E698-B663-5B8A-06EF-0339E3C1C540}") = "Santuario", "Assembly-CShar
 EndProject
 Project("{6396E698-B663-5B8A-06EF-0339E3C1C540}") = "Santuario", "Assembly-UnityScript-firstpass.unityproj", "{93D541F3-EB41-39C5-83A9-74306F6BA5D9}"
 EndProject
+Project("{6396E698-B663-5B8A-06EF-0339E3C1C540}") = "Santuario", "Assembly-UnityScript.unityproj", "{BD35BF56-7BBF-D0A1-3D99-3B970630ED7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,11 +27,15 @@ Global
 		{93D541F3-EB41-39C5-83A9-74306F6BA5D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93D541F3-EB41-39C5-83A9-74306F6BA5D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93D541F3-EB41-39C5-83A9-74306F6BA5D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD35BF56-7BBF-D0A1-3D99-3B970630ED7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD35BF56-7BBF-D0A1-3D99-3B970630ED7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD35BF56-7BBF-D0A1-3D99-3B970630ED7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD35BF56-7BBF-D0A1-3D99-3B970630ED7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																				GlobalSection(MonoDevelopProperties) = preSolution
+																																														GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
