@@ -23,7 +23,8 @@ public class PlayerController : MonoBehaviour {
 	//constante del angulo de rotacion
 	private const float ANGULO_ROTACION_EN_X=0.30f;
 	private const float ANGULO_ROTACION_EN_Y=0.20f;
-	private const float ANGULO_BLOQUEAR_EN_Y=0.30f;
+	
+	private const float CONSTANTE_ROTACION_VERTICAL=25f;
 	private const float ANGULO_FRONTERA_Y_REGRESAR=0.05f;
 	private const float DISTANCIA_MOVER=200f;
 	
@@ -72,8 +73,7 @@ public class PlayerController : MonoBehaviour {
 					SkeletonJointOrientation ori=this.skeletonCapability.GetSkeletonJointOrientation(user,SkeletonJoint.Torso);
 					SkeletonJointPosition posicion=this.skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Torso);
 					Quaternion q=SkeletonJointOrientationToQuaternion(ori);
-					RotaEnX(q.y);
-					RotaEnY(q.x);
+					Rotar(q);
 					if(contador==0){
 						this.puntoInicial=posicion.Position;
 					}else{
@@ -98,10 +98,10 @@ public class PlayerController : MonoBehaviour {
             	this.skeletonCapability.RequestCalibration(e.ID, true);
             }
     }
-	/*
+	
 	void userGenerator_LostUser(object sender, UserLostEventArgs e){
-		//this.joints.Remove(e.ID);
-	}*/
+		this.contador=0;
+	}
 	
 	void poseDetectionCapability_PoseDetected(object sender, PoseDetectedEventArgs e){
             this.poseDetectionCapability.StopPoseDetection(e.ID);
@@ -159,37 +159,39 @@ public class PlayerController : MonoBehaviour {
 		return new Quaternion(qx, qy, qz, qw);
 
     }
-	//rota en x en base al y del cuaternion
-	void RotaEnX(float y){
-		if(y>ANGULO_ROTACION_EN_X){
-			transform.Rotate(new Vector3(0f,valorRotation,0f));
-		}else if(y<-ANGULO_ROTACION_EN_X){
-			transform.Rotate(new Vector3(0f,-valorRotation,0f));
+	//Rotacion del jugador y de la camara
+	void Rotar(Quaternion rotacionKinect){
+		GameObject camara=GameObject.Find("CuboCamara");
+		float xPlayer=0f;
+		float yPlayer=0f;
+		float zPlayer=0f;
+		float xCamara=camara.transform.localEulerAngles.x;
+		float yCamara=0f;
+		float zCamara=0f;
+		bool isRotacionHorizontal=false;
+		
+		if(rotacionKinect.y>ANGULO_ROTACION_EN_X){
+			isRotacionHorizontal=true;
+			yPlayer=valorRotation;
+		}else if(rotacionKinect.y<-ANGULO_ROTACION_EN_X){
+			isRotacionHorizontal=true;
+			yPlayer=-valorRotation;
+		}
+		
+		if(rotacionKinect.x<-(ANGULO_ROTACION_EN_Y-0.1f)){
+			//xCamara=(xCamara+valorRotation*CONSTANTE_ROTACION_VERTICAL)/2f;
+		}else if(rotacionKinect.x>ANGULO_ROTACION_EN_Y){
+			//xCamara=(xCamara+valorRotation*-CONSTANTE_ROTACION_VERTICAL)/2f;
+		}
+		
+		
+		Debug.Log(xCamara);
+		if(isRotacionHorizontal){
+			transform.Rotate(new Vector3(xPlayer,yPlayer,zPlayer));
+		}else{
+			camara.transform.localEulerAngles=new Vector3(xCamara,yCamara,zCamara);
 		}
 	}
-	
-	//rota en y en base al x del cuaternion
-	void RotaEnY(float x){
-		GameObject camara=GameObject.Find("CuboCamara");
-		float rotacionCamaraX=camara.transform.rotation.x;
-		if(x>-ANGULO_ROTACION_EN_Y&x<ANGULO_ROTACION_EN_Y){
-			if(rotacionCamaraX>ANGULO_FRONTERA_Y_REGRESAR&rotacionCamaraX<-ANGULO_FRONTERA_Y_REGRESAR){
-				camara.transform.Rotate(new Vector3(0f,0f,0f));
-			}else if(rotacionCamaraX>=ANGULO_FRONTERA_Y_REGRESAR){
-				camara.transform.Rotate(new Vector3(-valorRotation,0f,0f));
-			}else if(rotacionCamaraX<=-ANGULO_FRONTERA_Y_REGRESAR){
-				camara.transform.Rotate(new Vector3(valorRotation,0f,0f));
-			}
-		}else //esta parte del codigo hace la rotacion
-		if(x<-(ANGULO_ROTACION_EN_Y-0.1f)&rotacionCamaraX<ANGULO_BLOQUEAR_EN_Y){
-			//rota hacia abajo
-			camara.transform.Rotate(new Vector3(valorRotation,0f,0f));
-		}else if(x>ANGULO_ROTACION_EN_Y&rotacionCamaraX>-ANGULO_BLOQUEAR_EN_Y){
-			//rota hacia arriba
-			camara.transform.Rotate(new Vector3(-valorRotation,0f,0f));
-		}		
-		
-	}	
 
 	void Mover(Point3D puntoActual){
 		//Avanzar
