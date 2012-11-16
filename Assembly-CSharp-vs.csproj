@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Altar\RandomRangeTransform.cs" />
+     <Compile Include="Assets\OpenNI\Source\FPS.cs" />
      <Compile Include="Assets\OpenNI\Source\PlayerController.cs" />
      <Compile Include="Assets\candle\RandomRangePointLight.cs" />
      <None Include="Assets\OpenNI\OpenNI.xml" />
