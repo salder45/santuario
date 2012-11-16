@@ -6,7 +6,7 @@ using OpenNI;
 
 //path
 using System.IO;
-
+[RequireComponent (typeof (CharacterController))]
 public class PlayerController : MonoBehaviour {
 	//path del archivo .// es el raiz del proyecto
 	private readonly string XML_CONFIG=@".//Assets/OpenNI/OpenNI.xml";
@@ -27,12 +27,18 @@ public class PlayerController : MonoBehaviour {
 	private const float CONSTANTE_ROTACION_VERTICAL=25f;
 	private const float ANGULO_FRONTERA_Y_REGRESAR=0.05f;
 	private const float DISTANCIA_MOVER=200f;
+	//fps
+	public float gravedad = 20.0f;
+	private bool estaEnSuelo = false;
+
+	
 	
 	//punto de refrencia para avanzar/retroceder
 	private Point3D puntoInicial;
 
 	// Use this for initialization
 	void Start () {
+		/*
 		Debug.Log("Start");
 		this.context=Context.CreateFromXmlFile(XML_CONFIG,out scriptNode);
 		this.depth=context.FindExistingNode(NodeType.Depth) as DepthGenerator;
@@ -53,11 +59,12 @@ public class PlayerController : MonoBehaviour {
 				
 		this.userGenerator.StartGenerating();
 		this.shouldRun=true;
-	
+	*/
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		/*
 		//Debug.Log("Update");
 		if(this.shouldRun){
 			try{
@@ -83,13 +90,14 @@ public class PlayerController : MonoBehaviour {
 				}
 			}
 		}
+		*/
 	}
-	
+	/*
 	void OnApplicationQuit(){
 		Debug.Log("Saliendo de la aplicacion");
 		context.Release();
 	}
-	
+	*/
 	//handlers
 	void userGenerator_NewUser(object sender, NewUserEventArgs e){
           if (this.skeletonCapability.DoesNeedPoseForCalibration){
@@ -177,7 +185,7 @@ public class PlayerController : MonoBehaviour {
 			isRotacionHorizontal=true;
 			yPlayer=-valorRotation;
 		}
-		
+		/*
 		if(rotacionKinect.x<-(ANGULO_ROTACION_EN_Y-0.1f)){
 			xCamara=(xCamara+valorRotation*CONSTANTE_ROTACION_VERTICAL)/2f;
 		}else if(rotacionKinect.x>ANGULO_ROTACION_EN_Y){
@@ -193,6 +201,7 @@ public class PlayerController : MonoBehaviour {
 				xCamara=0f;
 			}
 		}
+		*/
 		if(isRotacionHorizontal){
 			transform.Rotate(new Vector3(xPlayer,yPlayer,zPlayer));
 		}else{
