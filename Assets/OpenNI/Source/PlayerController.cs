@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 using System;
 using OpenNI;
+using NITE;
 
-//path
-using System.IO;
+[RequireComponent (typeof (CharacterController))]
 public class PlayerController : MonoBehaviour {
-	//path del archivo .// es el raiz del proyecto
-	private readonly string XML_CONFIG=@".//Assets/OpenNI/OpenNI.xml";
+	//variables Kinect
+	//path del archivo .// es el raiz del proyecto es mejor ponerlo en el raiz por el asunto de cuando se hace ejecutable
+	private readonly string XML_CONFIG=@".//OpenNI.xml";
 	private Context context;
 	private ScriptNode scriptNode;
 	private DepthGenerator depth;
@@ -16,24 +16,30 @@ public class PlayerController : MonoBehaviour {
 	private SkeletonCapability skeletonCapability;
 	private PoseDetectionCapability poseDetectionCapability;
 	private string calibPose;
-	private float valorRotation=1f;
+	private Point3D puntoInicial;
 	private bool shouldRun;
+	//variables Unity CharacterController
+	public float gravedad = 20.0f;
+	private Vector3 moveDirection = Vector3.zero;
+	private bool grounded = false;
+	private float fallStartLevel;
+    private bool falling;
+	private CharacterController controller;
+	private Transform miTransform;
+	//valores del algoritmo
+	private float valorRotation=1f;
 	private int contador=0;
-	//constante del angulo de rotacion
 	private const float ANGULO_ROTACION_EN_X=0.30f;
-	private const float ANGULO_ROTACION_EN_Y=0.20f;
-	
+	private const float ANGULO_ROTACION_EN_Y=0.20f;	
 	private const float CONSTANTE_ROTACION_VERTICAL=25f;
 	private const float ANGULO_FRONTERA_Y_REGRESAR=0.05f;
 	private const float DISTANCIA_MOVER=200f;
 	
 	
-	//punto de refrencia para avanzar/retroceder
-	private Point3D puntoInicial;
-
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Start");
+		//Init Kinect
 		this.context=Context.CreateFromXmlFile(XML_CONFIG,out scriptNode);
 		this.depth=context.FindExistingNode(NodeType.Depth) as DepthGenerator;
 		if(depth==null){
@@ -44,54 +50,73 @@ public class PlayerController : MonoBehaviour {
 		this.poseDetectionCapability=this.userGenerator.PoseDetectionCapability;
 		this.calibPose=this.skeletonCapability.CalibrationPose;
 		
+		//Init CharacterController
+		controller=GetComponent<CharacterController>();
+		miTransform=transform;
+		//asignando handlers
 		this.userGenerator.NewUser+=userGenerator_NewUser;
-		//this.userGenerator.LostUser+=userGenerator_LostUser;
+		this.userGenerator.LostUser+=userGenerator_LostUser;
 		this.poseDetectionCapability.PoseDetected+=poseDetectionCapability_PoseDetected;
-		this.skeletonCapability.CalibrationComplete+=skeletonCapability_CalibrationComplete;
-		
+		this.skeletonCapability.CalibrationComplete+=skeletonCapability_CalibrationComplete;		
 		this.skeletonCapability.SetSkeletonProfile(SkeletonProfile.All);
-				
+		//start generador
 		this.userGenerator.StartGenerating();
-		this.shouldRun=true;
-	
+		this.shouldRun=true;	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-		//Debug.Log("Update");
-		if(this.shouldRun){
-			try{
-				this.context.WaitOneUpdateAll(this.depth);
-			}catch(Exception){
-				Debug.Log("No paso");
-			}			
-			
-			int[] users=this.userGenerator.GetUsers();
-			foreach(int user in users){
-				if(this.skeletonCapability.IsTracking(user)){
-					//Debug.Log("Trackeando");
-					SkeletonJointOrientation ori=this.skeletonCapability.GetSkeletonJointOrientation(user,SkeletonJoint.Torso);
-					SkeletonJointPosition posicion=this.skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Torso);
-					Quaternion q=SkeletonJointOrientationToQuaternion(ori);
-					Rotar(q);
-					if(contador==0){
-						this.puntoInicial=posicion.Position;
-					}else{
-						Mover(posicion.Position);
-					}					
-					contador=contador+1;
+		//solo se usa para ejecutar el GetButtonDown solo jala en el update no en el FixedUpdate
+	}
+	//Usado por el CharacterController
+	void FixedUpdate() {
+		//Debug.Log("FixedUpdate");
+		if(controller.isGrounded){
+			if(this.shouldRun){
+				try{
+					this.context.WaitOneUpdateAll(this.depth);
+				}catch(Exception){
+					Debug.Log("No paso");
+				}
+				int[] users=this.userGenerator.GetUsers();
+				foreach(int user in users){
+					if(this.skeletonCapability.IsTracking(user)){
+						//Debug.Log("Track");
+						SkeletonJointOrientation ori=this.skeletonCapability.GetSkeletonJointOrientation(user,SkeletonJoint.Torso);
+						SkeletonJointPosition posicion=this.skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Torso);
+						Quaternion q=SkeletonJointOrientationToQuaternion(ori);
+						Rotar(q);
+						if(contador==0){
+							this.puntoInicial=posicion.Position;
+						}else{
+							Mover(posicion.Position);
+						}
+						contador=contador+1;
+					}
 				}
 			}
+		}else {
+			if (!falling) {
+                falling = true;
+                fallStartLevel = miTransform.position.y;
+            }			
 		}
+		
+		//aplicando gravedad
+		moveDirection.y -= gravedad * Time.deltaTime;
+		
+		//mueve el controlador y guarda si esta en el piso o no
+		//grounded = (controller.Move(moveDirection * Time.deltaTime) & CollisionFlags.Below) != 0;
+		controller.SimpleMove(moveDirection);
+		
 	}
-	
+	//apagar el sensor
 	void OnApplicationQuit(){
 		Debug.Log("Saliendo de la aplicacion");
 		context.Release();
 	}
 	
-	//handlers
+	//handlers de openni
 	void userGenerator_NewUser(object sender, NewUserEventArgs e){
           if (this.skeletonCapability.DoesNeedPoseForCalibration){
             	this.poseDetectionCapability.StartPoseDetection(this.calibPose, e.ID);
@@ -121,8 +146,8 @@ public class PlayerController : MonoBehaviour {
             }
     }
 	
-	public static Quaternion SkeletonJointOrientationToQuaternion(SkeletonJointOrientation m) {float tr = m.X1 + m.Y2 + m.Z3;
-
+	public static Quaternion SkeletonJointOrientationToQuaternion(SkeletonJointOrientation m) {
+		float tr = m.X1 + m.Y2 + m.Z3;
         float S = 0f;
 		float qw = 0f;
 		float qx = 0f;
@@ -160,6 +185,27 @@ public class PlayerController : MonoBehaviour {
 		return new Quaternion(qx, qy, qz, qw);
 
     }
+	
+	//algoritmo
+	void Mover(Point3D puntoActual){
+		//Debug.Log("Mover");
+		Debug.Log("****X "+moveDirection.x+" Y "+moveDirection.y+" Z "+moveDirection.z);
+		//Avanzar
+		if(puntoActual.Z<puntoInicial.Z-DISTANCIA_MOVER){
+			Debug.Log("Avanzar");
+			moveDirection=miTransform.TransformDirection(Vector3.forward)*10f;
+		}else //Retroceder 
+		if(puntoActual.Z>puntoInicial.Z+DISTANCIA_MOVER){
+			Debug.Log("Retroceder");
+			moveDirection=miTransform.TransformDirection(Vector3.back)*10f;
+		}else{
+			Debug.Log("Estar");
+			moveDirection=Vector3.zero;
+		}
+		
+		Debug.Log("X "+moveDirection.x+" Y "+moveDirection.y+" Z "+moveDirection.z);
+	}
+	
 	//Rotacion del jugador y de la camara
 	void Rotar(Quaternion rotacionKinect){
 		GameObject camara=GameObject.Find("CuboCamara");
@@ -199,16 +245,6 @@ public class PlayerController : MonoBehaviour {
 			transform.Rotate(new Vector3(xPlayer,yPlayer,zPlayer));
 		}else{
 			camara.transform.localEulerAngles=new Vector3(xCamara,yCamara,zCamara);
-		}
-	}
-
-	void Mover(Point3D puntoActual){
-		//Avanzar
-		if(puntoActual.Z<puntoInicial.Z-DISTANCIA_MOVER){
-			transform.Translate(Vector3.forward*Time.deltaTime*3f);
-		}else //Retroceder 
-		if(puntoActual.Z>puntoInicial.Z+DISTANCIA_MOVER){
-			transform.Translate(Vector3.back*Time.deltaTime*3f);
 		}
 	}
 }
