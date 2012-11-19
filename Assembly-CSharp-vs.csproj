@@ -47,7 +47,6 @@
      <Compile Include="Assets\Altar\RandomRangeTransform.cs" />
      <Compile Include="Assets\Jugar.cs" />
      <Compile Include="Assets\OpenNI\Source\PlayerController.cs" />
-     <Compile Include="Assets\OpenNI\Source\PlayerController2.cs" />
      <Compile Include="Assets\candle\RandomRangePointLight.cs" />
      <None Include="Assets\smoke&amp;fire\Particle Sep-Alpha Blend.shader" />
  <Reference Include="Library\ScriptAssemblies\Assembly-UnityScript-firstpass">
