@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		Debug.Log("Update");
 		direccionMovimiento=Vector3.zero;
 		if(this.shouldRun){
 			try{
@@ -190,9 +191,9 @@ public class PlayerController : MonoBehaviour {
 			isRotacionHorizontal=true;
 			yPlayer=-valorRotation;
 		}
-		/*
+		
 		if(rotacionKinect.x<-(ANGULO_ROTACION_EN_Y-0.1f)){
-			xCamara=(xCamara+valorRotation*CONSTANTE_ROTACION_VERTICAL)/2f;
+			xCamara=(xCamara+valorRotation*CONSTANTE_ROTACION_VERTICAL)/3f;
 		}else if(rotacionKinect.x>ANGULO_ROTACION_EN_Y){
 			if(xCamara==0|xCamara>335f){
 				xCamara=xCamara-valorRotation;
@@ -206,7 +207,7 @@ public class PlayerController : MonoBehaviour {
 				xCamara=0f;
 			}
 		}
-		*/
+		
 		if(isRotacionHorizontal){
 			transform.Rotate(new Vector3(xPlayer,yPlayer,zPlayer));
 		}else{
@@ -218,10 +219,10 @@ public class PlayerController : MonoBehaviour {
 	void Mover(Point3D puntoActual){
 		//Avanzar
 		if(puntoActual.Z<puntoInicial.Z-DISTANCIA_MOVER){
-			direccionMovimiento=transform.TransformDirection(Vector3.forward);
+			direccionMovimiento=transform.TransformDirection(Vector3.forward)*velocidad;
 		}else //Retroceder 
 		if(puntoActual.Z>puntoInicial.Z+DISTANCIA_MOVER){
-			direccionMovimiento=transform.TransformDirection(Vector3.back);
+			direccionMovimiento=transform.TransformDirection(Vector3.back)*velocidad;
 		}
 	}
 	
