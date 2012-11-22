@@ -50,6 +50,11 @@ public class MenuController : MonoBehaviour {
 	private float yMedia=0f;
 	private float zMedia=0f;
 	
+	//Seleccion de opciones en el menu
+	public string nivel;
+	public float frameDeEspera ;
+	private float contador;
+	
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Start");
@@ -194,5 +199,24 @@ public class MenuController : MonoBehaviour {
 		this.yMedia=yInit+(distanciaY/2);
 		this.zMedia=zInit+(distanciaZ/2);
 	}
+
+	
+	//Codigo para seleccion con espera en seleccion (espera de frames no segundos)
+	
+	void OnCollisionStay(Collision collisionInfo) {    
+		Debug.Log ("Stay "+contador);
+		contador ++;
+		if(frameDeEspera<contador ){
+			context.Release();
+			Application.LoadLevel(nivel);
+			
+		}
+    }
+	
+	 void OnCollisionExit(Collision collision) {
+		Debug.Log("CollisionExit");
+		contador=0;
+        
+    }
 	
 }

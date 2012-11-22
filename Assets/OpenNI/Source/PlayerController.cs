@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour {
 	private PoseDetectionCapability poseDetectionCapability;
 	private string calibPose;
 	private Point3D puntoInicial;
+	//Algoritmo
+	private Point3D puntoTorso;
 	//constantes
 	private bool shouldRun;
 	private int contador=0;
@@ -32,6 +34,16 @@ public class PlayerController : MonoBehaviour {
 	private float velocidadRotacion=3.0f;
 	CharacterController controller;
 	Vector3 direccionMovimiento=Vector3.zero;
+	
+	//Manos Para el menu siguiente
+	SkeletonJointPosition posHandIz;
+	SkeletonJointPosition posHandDr;
+	
+	//Constantews
+	private const float MEDIDA_SEGURIDAD_FRENTE_Z=200;
+	private const float MEDIDA_SEGURIDAD_CENTRAL=100;
+	private const float MEDIDA_SEGURIDAD_MANOS=100;
+	private const float LIMITE_ROTACION_VERTICAL=0.3f;
 	
 	// Use this for initialization
 	void Start () {
@@ -63,7 +75,7 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log("Update");
+		//Debug.Log("Update");
 		direccionMovimiento=Vector3.zero;
 		if(this.shouldRun){
 			try{
@@ -74,6 +86,9 @@ public class PlayerController : MonoBehaviour {
 			int[] users=this.userGenerator.GetUsers();
 			foreach(int user in users){
 				if(this.skeletonCapability.IsTracking(user)){
+					updatePuntoRef(skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Torso));
+					posHandIz=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.RightHand);
+					posHandDr=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.LeftHand);
 					SkeletonJointOrientation ori=this.skeletonCapability.GetSkeletonJointOrientation(user,SkeletonJoint.Torso);
 					SkeletonJointPosition posicion=this.skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Torso);
 					Quaternion rotacion=SkeletonJointOrientationToQuaternion(ori);
@@ -224,6 +239,39 @@ public class PlayerController : MonoBehaviour {
 		if(puntoActual.Z>puntoInicial.Z+DISTANCIA_MOVER){
 			direccionMovimiento=transform.TransformDirection(Vector3.back)*velocidad;
 		}
+	}
+	
+	//Manipulacion de objeto
+	  void OnTriggerStay(Collider other) {
+        //Debug.Log("TriggerStay " + other.transform.parent.gameObject.name);
+        	
+		if(isDentroCuadroSeguridad(posHandDr.Position)&isDentroCuadroSeguridad(posHandIz.Position)){
+			//Debug.Log("Si");
+			context.Release();
+			Application.LoadLevel(other.transform.parent.gameObject.name);
+		}
+		
+    }
+	
+	
+	bool isDentroCuadroSeguridad(Point3D puntoMano){
+		bool retorno=false;
+		float x,y,z;
+		x=puntoTorso.X;
+		y=puntoTorso.Y;
+		z=puntoTorso.Z;
+
+		if((x+MEDIDA_SEGURIDAD_CENTRAL>puntoMano.X&&x-MEDIDA_SEGURIDAD_CENTRAL<puntoMano.X)&&
+			(y+MEDIDA_SEGURIDAD_CENTRAL>puntoMano.Y&&y-MEDIDA_SEGURIDAD_CENTRAL<puntoMano.Y)&&
+			(z-((2*MEDIDA_SEGURIDAD_CENTRAL)+MEDIDA_SEGURIDAD_FRENTE_Z)<puntoMano.Z&&z-MEDIDA_SEGURIDAD_FRENTE_Z>puntoMano.Z)){
+			retorno=true;
+		}	
+
+		return retorno;
+	}
+	
+	void updatePuntoRef(SkeletonJointPosition punto){
+		this.puntoTorso=punto.Position;
 	}
 	
 }
