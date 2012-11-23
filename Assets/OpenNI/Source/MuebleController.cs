@@ -86,22 +86,33 @@ public class MuebleController : MonoBehaviour {
 					//rotacion vertical
 					//Frente
 					
+					float tmp=transform.eulerAngles.x;
+					if(tmp>35&tmp<318){
+						tmp=35;
+					}else if(tmp<320&tmp>36){
+						tmp=320;
+					}
+					
+					Debug.Log(transform.eulerAngles.x+" ==== "+tmp);
+					
 					if((posHandDr.Position.Y<posHandIz.Position.Y&isDentroMargenZ(posHandDr.Position.Z,posHandIz.Position.Z))&(!isDentroMargenY(posHandDr.Position.Y,posHandIz.Position.Y))){
-						if((transform.eulerAngles.x<=35||transform.eulerAngles.x>=320)|(transform.eulerAngles.x-1<=35||transform.eulerAngles.x+1>=320)){
-							Debug.Log("Frente"+transform.eulerAngles.x);
+						//|(transform.eulerAngles.x-2<=35||transform.eulerAngles.x+2>=320)
+						if((transform.eulerAngles.x<=35||transform.eulerAngles.x>=320)|tmp==35){
+							//Debug.Log("Frente"+transform.eulerAngles.x);
 							x=-valorRotation;													
 						}
 							//y positivo x negativo
 						//Atras
 					}else if((posHandDr.Position.Y>posHandIz.Position.Y&isDentroMargenZ(posHandDr.Position.Z,posHandIz.Position.Z))&(!isDentroMargenY(posHandDr.Position.Y,posHandIz.Position.Y))){
-						if((transform.eulerAngles.x<=35||transform.eulerAngles.x>=320)|(transform.eulerAngles.x-1<=35||transform.eulerAngles.x+1>=320)){
-							Debug.Log("Atras"+transform.eulerAngles.x);
+						//|(transform.eulerAngles.x-2<=35||transform.eulerAngles.x+2>=320)
+						if((transform.eulerAngles.x<=35||transform.eulerAngles.x>=320)|tmp==320){
+							//Debug.Log("Atras"+transform.eulerAngles.x);
 							x=valorRotation;							
 						}
 						//y negativo x positivo
 					}
 					
-					Debug.Log("EulerAngles"+transform.eulerAngles);
+					//Debug.Log("EulerAngles"+transform.eulerAngles);
 					//Debug.Log("LocalEulerAngles"+transform.localEulerAngles);
 					//Debug.Log("X "+transform.rotation.x+" Y "+transform.rotation.y+" Z "+transform.rotation.z);
 					//Debug.Log("XL "+transform.localRotation.x+" YL "+transform.localRotation.y+" ZL "+transform.localRotation.z);
