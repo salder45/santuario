@@ -51,9 +51,15 @@ public class MenuController : MonoBehaviour {
 	private float zMedia=0f;
 	
 	//Seleccion de opciones en el menu
-	public string nivel;
+	public string siguienteNivel;
 	public float frameDeEspera ;
-	private float contador;
+	
+	//Contadores para el fade
+	private float fadeCount=0;
+	private float exitCount=0;
+	
+	//Objetos para ocultar y Audio Source
+	public GameObject fade;
 	
 	// Use this for initialization
 	void Start () {
@@ -92,6 +98,13 @@ public class MenuController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log("Update");
+		if(fadeCount<100){
+			fadeCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 1f;
+			color.a -= fadeCount/100;
+			fade.renderer.material.color = color;
+		}
 		this.context.WaitOneUpdateAll(this.depth);
 	}
 	
@@ -203,19 +216,23 @@ public class MenuController : MonoBehaviour {
 	
 	//Codigo para seleccion con espera en seleccion (espera de frames no segundos)
 	
-	void OnCollisionStay(Collision collisionInfo) {    
-		Debug.Log ("Stay "+contador);
-		contador ++;
-		if(frameDeEspera<contador ){
+	void OnCollisionStay(Collision collisionInfo) {
+		if(frameDeEspera>exitCount ){
+			exitCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 0f;
+			color.a += exitCount/100;
+			fade.renderer.material.color = color;
+		}else{
 			context.Release();
-			Application.LoadLevel(nivel);
-			
+			Application.LoadLevel(siguienteNivel);
 		}
     }
 	
 	 void OnCollisionExit(Collision collision) {
-		Debug.Log("CollisionExit");
-		contador=0;
+		
+		fadeCount= 99;
+		exitCount=0;
         
     }
 	

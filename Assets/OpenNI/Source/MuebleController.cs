@@ -7,6 +7,7 @@ using System;
 public class MuebleController : MonoBehaviour {
 	//OpenNI
 	private readonly string XML_CONFIG=@".//OpenNI.xml";
+	private const string NOMBRE_ANTERIOR="Santuario";
 	private Context context;
 	private ScriptNode scriptNode;
 	private DepthGenerator depth;
@@ -29,6 +30,12 @@ public class MuebleController : MonoBehaviour {
 	public float escala=1f;
 	private const float TAMANO_SECTOR=100;
 	private const int ESCALA_DISTANCIA=1;
+	
+	//Contadores para el fade
+	private float fadeCount=0;
+	
+	//Objetos para ocultar y Audio Source
+	public GameObject fade;
 	
 	// Use this for initialization
 	void Start () {
@@ -56,6 +63,14 @@ public class MuebleController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log("Update");
+		if(fadeCount<100){
+			fadeCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 1f;
+			color.a -= fadeCount/100;
+			fade.renderer.material.color = color;
+		}
+		
 		this.context.WaitOneUpdateAll (this.depth);
 		int[] users=this.userGenerator.GetUsers();
 			foreach(int user in users){
@@ -65,7 +80,6 @@ public class MuebleController : MonoBehaviour {
 				SkeletonJointPosition posHandDr=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.LeftHand);
 				
 				if(isDentroCuadroSeguridad(posHandDr.Position)&isDentroCuadroSeguridad(posHandIz.Position)){
-					
 					float dist=distanciaEntreDosPuntos(posHandDr.Position,posHandIz.Position)/100f;					
 					float noNormalActual=(dist*1f)/ESCALA_DISTANCIA;
 					int disNormal=(int)dist;
@@ -121,11 +135,18 @@ public class MuebleController : MonoBehaviour {
 				
 					
 				}else {
+					
 					transform.rotation=new Quaternion(0f,0f,0f,0f);
 				}
 				//x
 				//positivo es hacia arriba
 				//negativo hacia abajo
+				SkeletonJointPosition cabeza=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Head);
+				if((posHandDr.Position.Y>cabeza.Position.Y)|(posHandIz.Position.Y>cabeza.Position.Y)){
+					Debug.Log("Debe salir");
+					context.Release();
+					Application.LoadLevel(NOMBRE_ANTERIOR);
+				}
 							
 			}
 		}
@@ -218,5 +239,6 @@ public class MuebleController : MonoBehaviour {
 
 	float elevaCuadrado(float numero){
 		return (float)Math.Pow(numero,2);
-	}
+	}	
+	
 }

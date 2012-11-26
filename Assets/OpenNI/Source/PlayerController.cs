@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	//variables kinect
 	//path del archivo .// es el raiz del proyecto es mejor ponerlo en el raiz por el asunto de cuando se hace ejecutable
 	private readonly string XML_CONFIG=@".//OpenNI.xml";
+	private const string NOMBRE_ANTERIOR="menu";
 	private Context context;
 	private ScriptNode scriptNode;
 	private DepthGenerator depth;
@@ -45,6 +46,14 @@ public class PlayerController : MonoBehaviour {
 	private const float MEDIDA_SEGURIDAD_MANOS=100;
 	private const float LIMITE_ROTACION_VERTICAL=0.3f;
 	
+	//Contadores para el fade
+	private float fadeCount=0;
+	private float exitCount=0;
+	
+	
+	//Objetos para ocultar y Audio Source
+	public GameObject fade;
+	
 	// Use this for initialization
 	void Start () {
 		Debug.Log("Start");
@@ -76,6 +85,14 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log("Update");
+		if(fadeCount<100){
+			fadeCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 1f;
+			color.a -= fadeCount/100;
+			fade.renderer.material.color = color;
+		}
+		
 		direccionMovimiento=Vector3.zero;
 		if(this.shouldRun){
 			try{
@@ -99,7 +116,14 @@ public class PlayerController : MonoBehaviour {
 						Mover(posicion.Position);
 					}					
 					contador=contador+1;
+					
+					SkeletonJointPosition cabeza=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Head);
+					if((posHandDr.Position.Y>cabeza.Position.Y)|(posHandIz.Position.Y>cabeza.Position.Y)){
+					Debug.Log("Debe salir");
+					context.Release();
+					Application.LoadLevel(NOMBRE_ANTERIOR);
 				}
+				}				
 			}
 		}
 		
@@ -246,13 +270,25 @@ public class PlayerController : MonoBehaviour {
         //Debug.Log("TriggerStay " + other.transform.parent.gameObject.name);
         	
 		if(isDentroCuadroSeguridad(posHandDr.Position)&isDentroCuadroSeguridad(posHandIz.Position)){
-			//Debug.Log("Si");
-			context.Release();
-			Application.LoadLevel(other.transform.parent.gameObject.name);
+			if(exitCount<50){
+				exitCount++;
+				Color color = fade.renderer.material.color;
+				color.a = 0f;
+				color.a += exitCount/100;
+				fade.renderer.material.color = color;
+			}else{
+				context.Release();
+				Application.LoadLevel(other.transform.parent.gameObject.name);
+			} 
+			
 		}
 		
     }
 	
+	 void OnTriggerExit(Collider other){
+		fadeCount= 99;
+		exitCount=0;
+    }
 	
 	bool isDentroCuadroSeguridad(Point3D puntoMano){
 		bool retorno=false;
