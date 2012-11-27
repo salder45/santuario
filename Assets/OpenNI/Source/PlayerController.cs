@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour {
 	
 	//Constantews
 	private const float MEDIDA_SEGURIDAD_FRENTE_Z=200;
-	private const float MEDIDA_SEGURIDAD_CENTRAL=100;
+	private const float MEDIDA_SEGURIDAD_CENTRAL=200;
 	private const float MEDIDA_SEGURIDAD_MANOS=100;
 	private const float LIMITE_ROTACION_VERTICAL=0.3f;
 	
