@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour {
 	private float fadeCount=0;
 	private float exitCount=0;
 	
+	private bool salir=false;
+	
 	
 	//Objetos para ocultar y Audio Source
 	public GameObject fade;
@@ -120,9 +122,8 @@ public class PlayerController : MonoBehaviour {
 					SkeletonJointPosition cabeza=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Head);
 					if((posHandDr.Position.Y>cabeza.Position.Y)|(posHandIz.Position.Y>cabeza.Position.Y)){
 					Debug.Log("Debe salir");
-					context.Release();
-					Application.LoadLevel(NOMBRE_ANTERIOR);
-				}
+					salir=true;
+					}
 				}				
 			}
 		}
@@ -130,6 +131,18 @@ public class PlayerController : MonoBehaviour {
 		
 		controller.SimpleMove(direccionMovimiento);
 		//solo se usa para ejecutar el GetButtonDown solo jala en el update no en el FixedUpdate
+		if(salir){
+			exitCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 0f;
+			color.a += exitCount/50;
+			fade.renderer.material.color = color;
+			if(exitCount==50){
+				context.Release();
+				Application.LoadLevel(NOMBRE_ANTERIOR);
+			}
+			
+		}
 	}
 	//Usado por el CharacterController
 	void FixedUpdate() {
@@ -278,7 +291,7 @@ public class PlayerController : MonoBehaviour {
 				fade.renderer.material.color = color;
 			}else{
 				context.Release();
-				Application.LoadLevel(other.transform.parent.gameObject.name);
+				Application.LoadLevel(other.transform.gameObject.name);
 			} 
 			
 		}

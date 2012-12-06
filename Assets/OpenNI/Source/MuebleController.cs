@@ -33,6 +33,8 @@ public class MuebleController : MonoBehaviour {
 	
 	//Contadores para el fade
 	private float fadeCount=0;
+	private float exitCount=0;
+	private bool salir = false;
 	
 	//Objetos para ocultar y Audio Source
 	public GameObject fade;
@@ -144,13 +146,25 @@ public class MuebleController : MonoBehaviour {
 				SkeletonJointPosition cabeza=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Head);
 				if((posHandDr.Position.Y>cabeza.Position.Y)|(posHandIz.Position.Y>cabeza.Position.Y)){
 					Debug.Log("Debe salir");
-					context.Release();
-					Application.LoadLevel(NOMBRE_ANTERIOR);
+					salir=true;
 				}
 							
 			}
 		}
-	
+		if(salir){
+			exitCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 0f;
+			color.a += exitCount/50;
+			fade.renderer.material.color = color;
+			if(exitCount==49){
+				Debug.Log(exitCount);
+				context.Release();
+				Application.LoadLevel(NOMBRE_ANTERIOR);
+			}
+			
+		}
+		
 	}
 	
 	void OnApplicationQuit(){

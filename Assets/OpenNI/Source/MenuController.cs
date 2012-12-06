@@ -8,7 +8,7 @@ using OpenNI;
 public class MenuController : MonoBehaviour {
 	//kinect
 	private readonly string XML_CONFIG=@".//OpenNI.xml";
-	private Context context;
+	public Context context;
 	private ScriptNode scriptNode;
 	private DepthGenerator depth;
 	private HandsGenerator hands;
@@ -21,6 +21,7 @@ public class MenuController : MonoBehaviour {
 	private float yEnd=6.18f;
 	private float zEnd=6f;
 	//algoritmo
+	private float zInicial=0f;
 	
 	//constantes
 	private const string WAVE="Wave";
@@ -50,13 +51,15 @@ public class MenuController : MonoBehaviour {
 	private float yMedia=0f;
 	private float zMedia=0f;
 	
-	//Seleccion de opciones en el menu
-	public string siguienteNivel;
-	public float frameDeEspera ;
+	
+	//Click object audioSource
+	public AudioSource clickAudio;
 	
 	//Contadores para el fade
 	private float fadeCount=0;
-	private float exitCount=0;
+	private float exitCount=100;
+	private float frameDeEspera=100;
+	private string siguienteNivel;
 	
 	//Objetos para ocultar y Audio Source
 	public GameObject fade;
@@ -93,6 +96,7 @@ public class MenuController : MonoBehaviour {
 		this.gesture.AddGesture(WAVE);
 		this.gesture.GestureRecognized+=gesture_GestureRecognized;
 		this.gesture.StartGenerating();
+		
 	}
 	
 	// Update is called once per frame
@@ -105,6 +109,22 @@ public class MenuController : MonoBehaviour {
 			color.a -= fadeCount/100;
 			fade.renderer.material.color = color;
 		}
+		if(frameDeEspera>exitCount ){
+			exitCount++;
+			Color color = fade.renderer.material.color;
+			color.a = 0f;
+			color.a += exitCount/100;
+			fade.renderer.material.color = color;
+			if(exitCount==99){
+				context.Release();
+				Application.LoadLevel(siguienteNivel);
+			}
+			
+		}
+			
+		
+	
+		
 		this.context.WaitOneUpdateAll(this.depth);
 	}
 	
@@ -120,6 +140,7 @@ public class MenuController : MonoBehaviour {
 		this.puntoMano=e.Position;
 		setPuntosManoActuales(this.puntoMano);
 		iniciaPuntoReferencia(this.puntoMano);
+		this.zInicial=e.Position.Z;
 		//Debug.Log("X "+puntoMano.X+" Y "+puntoMano.Y+" Z "+puntoMano.Z);
 		//Debug.Log("**** X "+kinectRefX+" Y "+kinectRefY+" Z "+kinectRefZ);
 
@@ -165,7 +186,8 @@ public class MenuController : MonoBehaviour {
 	void calculaMovimiento(){
 		float x=transform.position.x;
 		float y=transform.position.y;
-		float z=transform.position.z;
+		float z=0f;
+		//float z=transform.position.z;
 		
 		if(kinectRefX>kinectManoX){
 			float xNormal=((kinectDistanciaX/10f)*100f)/(MEDIDA_MANO_X/10f);
@@ -178,13 +200,22 @@ public class MenuController : MonoBehaviour {
 			y=(yNormal*distanciaY)/100;
 			y=yInit+y;
 		}
-		
+		/*
 		if(kinectRefZ>kinectManoZ){
 			float zNormal=((kinectDistanciaZ/10f)*100f)/(MEDIDA_MANO_Z/10f);		
 			z=(zNormal*distanciaZ)/100;
 		}
+		*/
 		
 		transform.position=new Vector3(x,y,z);
+		//codigo a ver donde se acomoda
+		if(kinectManoZ<(zInicial-150f)){
+			Debug.Log("Click");
+			clickAudio.Play();
+			gameObject.transform.Translate(0f,0f,3f);
+			
+		}
+		
 	}
 	
 	float distanciaEntreDosPuntos(Point3D a,Point3D b){
@@ -214,26 +245,12 @@ public class MenuController : MonoBehaviour {
 	}
 
 	
-	//Codigo para seleccion con espera en seleccion (espera de frames no segundos)
 	
-	void OnCollisionStay(Collision collisionInfo) {
-		if(frameDeEspera>exitCount ){
-			exitCount++;
-			Color color = fade.renderer.material.color;
-			color.a = 0f;
-			color.a += exitCount/100;
-			fade.renderer.material.color = color;
-		}else{
-			context.Release();
-			Application.LoadLevel(siguienteNivel);
-		}
-    }
+	void OnCollisionEnter(Collision collision){
+		Debug.Log(collision.gameObject.name);
+		siguienteNivel = collision.gameObject.name;
+		exitCount = 0;
+	}
 	
-	 void OnCollisionExit(Collision collision) {
-		
-		fadeCount= 99;
-		exitCount=0;
-        
-    }
 	
 }
