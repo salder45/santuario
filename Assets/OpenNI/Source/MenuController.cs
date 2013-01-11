@@ -56,6 +56,7 @@ public class MenuController : MonoBehaviour {
 	public AudioSource clickAudio;
 	
 	//Contadores para el fade
+	private float clickCount = 0;
 	private float fadeCount=0;
 	private float exitCount=100;
 	private float frameDeEspera=100;
@@ -102,12 +103,14 @@ public class MenuController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log("Update");
+		
 		if(fadeCount<100){
 			fadeCount++;
 			Color color = fade.renderer.material.color;
 			color.a = 1f;
 			color.a -= fadeCount/100;
 			fade.renderer.material.color = color;
+			fadeCountCircle();
 		}
 		if(frameDeEspera>exitCount ){
 			exitCount++;
@@ -117,7 +120,12 @@ public class MenuController : MonoBehaviour {
 			fade.renderer.material.color = color;
 			if(exitCount==99){
 				context.Release();
-				Application.LoadLevel(siguienteNivel);
+				Debug.Log(siguienteNivel);
+				if(siguienteNivel == "Salir"){
+					Application.Quit();
+				}else{
+					Application.LoadLevel(siguienteNivel);
+				}
 			}
 			
 		}
@@ -209,10 +217,10 @@ public class MenuController : MonoBehaviour {
 		
 		transform.position=new Vector3(x,y,z);
 		//codigo a ver donde se acomoda
-		if(kinectManoZ<(zInicial-150f)){
+		if(kinectManoZ<(zInicial-250f)){
 			Debug.Log("Click");
 			clickAudio.Play();
-			gameObject.transform.Translate(0f,0f,3f);
+			gameObject.transform.Translate(0f,0f,6f);
 			
 		}
 		
@@ -246,11 +254,92 @@ public class MenuController : MonoBehaviour {
 
 	
 	
-	void OnCollisionEnter(Collision collision){
+	/*void OnCollisionEnter(Collision collision){
 		Debug.Log(collision.gameObject.name);
 		siguienteNivel = collision.gameObject.name;
 		exitCount = 0;
 	}
+	*/
+	void OnCollisionExit(Collision collision){
+		fadeCountCircle();
+		clickCount=0;
+	}
 	
+	void OnCollisionStay(Collision collision){
+		Debug.Log("CollisionStay"+clickCount);
+		if(clickCount<200){
+			
+			
+			if(clickCount>20){
+				GameObject goC = GameObject.Find("c1");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>45){
+				GameObject goC = GameObject.Find("c2");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>70){
+				GameObject goC = GameObject.Find("c3");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>95){
+				GameObject goC = GameObject.Find("c4");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>120){
+				GameObject goC = GameObject.Find("c5");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>145){
+				GameObject goC = GameObject.Find("c6");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>170){
+				GameObject goC = GameObject.Find("c7");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>195){
+				GameObject goC = GameObject.Find("c8");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			
+		}else{
+			siguienteNivel = collision.gameObject.name;
+			exitCount = 0;
+			collision.collider.enabled= false;
+			
+		}
+			
+		
+		clickCount++;
+	}
+	
+	void fadeCountCircle(){
+		int number=1;
+		while(number<=8){
+			string nameC = "c"+number;
+			GameObject goC = GameObject.Find(nameC);
+			Color color = goC.renderer.material.color;
+			color.a = 0f;
+			goC.renderer.material.color = color;
+			number++;
+		}
+	}
 	
 }

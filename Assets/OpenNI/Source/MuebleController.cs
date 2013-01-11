@@ -8,6 +8,7 @@ public class MuebleController : MonoBehaviour {
 	//OpenNI
 	private readonly string XML_CONFIG=@".//OpenNI.xml";
 	private const string NOMBRE_ANTERIOR="Santuario";
+	private const string NOMBRE_MENU="menu";
 	private Context context;
 	private ScriptNode scriptNode;
 	private DepthGenerator depth;
@@ -145,7 +146,7 @@ public class MuebleController : MonoBehaviour {
 				//negativo hacia abajo
 				SkeletonJointPosition cabeza=skeletonCapability.GetSkeletonJointPosition(user,SkeletonJoint.Head);
 				if((posHandDr.Position.Y>cabeza.Position.Y)|(posHandIz.Position.Y>cabeza.Position.Y)){
-					Debug.Log("Debe salir");
+					Debug.Log("Debe salir"+Application.loadedLevelName);
 					salir=true;
 				}
 							
@@ -160,7 +161,11 @@ public class MuebleController : MonoBehaviour {
 			if(exitCount==49){
 				Debug.Log(exitCount);
 				context.Release();
-				Application.LoadLevel(NOMBRE_ANTERIOR);
+				if(Application.loadedLevelName=="ComoJugar"){
+					Application.LoadLevel(NOMBRE_MENU);
+				}else{
+					Application.LoadLevel(NOMBRE_ANTERIOR);
+				}
 			}
 			
 		}
