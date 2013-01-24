@@ -1,12 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/OpenNI/Source/MenuController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/OpenNI/Source/PlayerGuiado.cs">
     <Files>
       <File FileName="Assets/OpenNI/Source/PlayerController.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/MuebleController.cs" Line="1" Column="1" />
-      <File FileName="Assets/OpenNI/Source/MenuController.cs" Line="273" Column="22" />
-      <File FileName="Assets/Intro.cs" Line="1" Column="1" />
-      <File FileName="Assets/ClickMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets/OpenNI/Source/MenuController.cs" Line="1" Column="1" />
+      <File FileName="Assets/OpenNI/Source/PlayerGuiado.cs" Line="186" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -15,7 +14,7 @@
             <Node name="Assets" expanded="True">
               <Node name="OpenNI" expanded="True">
                 <Node name="Source" expanded="True">
-                  <Node name="MenuController.cs" selected="True" />
+                  <Node name="PlayerGuiado.cs" selected="True" />
                 </Node>
               </Node>
             </Node>
