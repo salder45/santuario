@@ -15,6 +15,9 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	
 	//Constantes
 	private const string WAVE="Wave";
+	private const string CLICK="Click";
+	private const string CAMARA_PLAYER="CameraPlayer";
+	private const string CAMARA_MENU="CameraMenu";
 	private const float UNITY_MEDIDA_X_INIT=0.7f;
 	private const float UNITY_MEDIDA_X_END=1f;
 	private const float UNITY_MEDIDA_Y=0.6f;
@@ -55,17 +58,17 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	//distancias reales kinect
 	private float kinectDistanciaX=0f;
 	private float kinectDistanciaY=0f;
-	private float kinectDistanciaZ=0f;
-	
+	private float kinectDistanciaZ=0f;	
+	//variables prueba
+	private float contador=0f; 
 	// Use this for initialization
 	void Start(){
-		camaraPlayer=GameObject.Find("CameraPlayer").camera;
-		camaraPlayer.enabled=false;
-		camaraMenu=GameObject.Find("CameraMenu").camera;
+		camaraPlayer=GameObject.Find(CAMARA_PLAYER).camera;		
+		camaraMenu=GameObject.Find(CAMARA_MENU).camera;
+		seleccionarCamara(camaraMenu.ToString());
 		puntoInicial=GameObject.Find("puntoInicial");
 		puntoFinal=GameObject.Find("puntoFinal");
 		determinaEspacioUnity();
-		
 		determinaCentro();
 		transform.position=new Vector3(xMedia,yMedia,zMedia);
 		//
@@ -89,6 +92,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		this.hands.HandDestroy+=hands_HandDestroy;
 
 		this.gesture.AddGesture(WAVE);
+		this.gesture.AddGesture(CLICK);
 		this.gesture.GestureRecognized+=gesture_GestureRecognized;
 		this.gesture.StartGenerating();
 	}
@@ -113,7 +117,11 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	void hands_HandUpdate(object sender, HandUpdateEventArgs e){
 		setPuntosManoActuales(e.Position);
 		distanciaKinectReales();
-		calculaMovimiento();
+		if(!isActiveMainCamera()){
+			calculaMovimiento();
+		}else{
+			transform.position=new Vector3(xMedia,yMedia,zMedia);
+		}
 	}
 
 	void hands_HandDestroy(object sender, HandDestroyEventArgs e){
@@ -121,8 +129,11 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	}
 	
 	void gesture_GestureRecognized(object sender, GestureRecognizedEventArgs e){
+		Debug.Log(e.Gesture);
 		if(e.Gesture==WAVE){
 			this.hands.StartTracking(e.EndPosition);
+		}else if(e.Gesture==CLICK){
+			seleccionarCamara(CAMARA_MENU);
 		}
 	}
 	
@@ -220,5 +231,34 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 			
 		}
 		
+	}
+	
+	bool isActiveMainCamera(){
+		return camaraPlayer.enabled;
+	}
+	
+	void seleccionarCamara(string nombre){
+		//checar el cambiar de camaras el error es que las do quedan desactivadas el detalle es que solo regresa las camaras enabled en ese momento
+		if(nombre==CAMARA_PLAYER){
+			camaraPlayer.enabled=true;
+			camaraMenu.enabled=false;
+		}else {
+			camaraPlayer.enabled=false;
+			camaraMenu.enabled=true;
+		}
+	}
+	void OnCollisionStay(Collision collision){
+		Debug.Log("Permanece en el boton");
+		if(contador>50f){
+			Debug.Log("Debe hacer algo");
+			seleccionarCamara(CAMARA_PLAYER);
+			contador=0f;
+		}		
+		contador++;
+	}
+	
+	void OnCollisionExit(Collision collision){
+		Debug.Log("Colision fuera");
+		contador=0f;
 	}
 }
