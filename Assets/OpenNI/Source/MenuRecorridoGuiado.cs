@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using NITE;
 using OpenNI;
 using System;
@@ -25,11 +26,17 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	private const float MEDIDA_MANO_X=400f;
 	private const float MEDIDA_MANO_Y=400f;
 	private const float MEDIDA_MANO_Z=300f;
+	private const string EJE_X="X";
+	private const string EJE_Y="Y";
+	private const string EJE_Z="Z";
+	private const float MOVIMIENTO=1f;
+	
 	private float zInicial=0f;
 	Camera camaraMenu;
 	Camera camaraPlayer;
 	GameObject puntoInicial;
 	GameObject puntoFinal;
+	GameObject player;
 	//puntos inicial y final
 	private float xInit=0f;
 	private float yInit=0f;
@@ -60,9 +67,17 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	private float kinectDistanciaY=0f;
 	private float kinectDistanciaZ=0f;	
 	//variables prueba
-	private float contador=0f; 
+	private float contador=0f;
+	//Movimiento
+	//variable que guarda en que posicion de la lista se encuentra
+	private int posicionActual=0;
+	//Lista del orden 
+	public List<List<Movimiento>> orden;
+	public List<Movimiento> movimientos;
+	
 	// Use this for initialization
 	void Start(){
+		player=GameObject.Find("Player");
 		camaraPlayer=GameObject.Find(CAMARA_PLAYER).camera;		
 		camaraMenu=GameObject.Find(CAMARA_MENU).camera;
 		seleccionarCamara(camaraMenu.ToString());
@@ -95,7 +110,9 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		this.gesture.AddGesture(CLICK);
 		this.gesture.GestureRecognized+=gesture_GestureRecognized;
 		this.gesture.StartGenerating();
-	}
+		//iniciaPuntos
+		iniciaPuntos();
+}
 	
 	// Update is called once per frame
 	void Update (){
@@ -107,7 +124,6 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		context.Release();
 	}
 	
-	//handlers
 	void hands_HandCreate(object sender, HandCreateEventArgs e){
 		this.puntoMano=e.Position;
 		setPuntosManoActuales(this.puntoMano);
@@ -250,9 +266,9 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	void OnCollisionStay(Collision collision){
 		Debug.Log("Permanece en el boton");
 		if(contador>50f){
-			Debug.Log("Debe hacer algo");
 			seleccionarCamara(CAMARA_PLAYER);
 			contador=0f;
+			ejecutaVariosMovimientos(posicionActual,true);
 		}		
 		contador++;
 	}
@@ -260,5 +276,51 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	void OnCollisionExit(Collision collision){
 		Debug.Log("Colision fuera");
 		contador=0f;
+	}
+	
+	void iniciaPuntos(){
+		orden=new List<List<Movimiento>>();		
+		//Movimiento1
+		List<Movimiento> movsUno=new List<Movimiento>();
+		Movimiento m01=new Movimiento();
+		m01.distancia=30f;
+		m01.eje=EJE_X;
+		movsUno.Add(m01);
+		orden.Add(movsUno);		
+	}
+	
+	void ejecutaVariosMovimientos(int posAc,bool isAvanzar){
+		List<Movimiento> movs=orden[posAc];
+		foreach(Movimiento m in movs){
+			StartCoroutine(ejecutaMovimiento(m,isAvanzar));
+			//ejecutaMovimiento(m,isAvanzar);
+		}
+	}
+	
+	IEnumerator ejecutaMovimiento(Movimiento movimiento,bool isAvanzar){
+		float x,y,z;
+		x=player.transform.position.x;
+		y=player.transform.position.y;
+		z=player.transform.position.z;
+		if(isAvanzar){
+			if(movimiento.eje==EJE_X){
+				x+=movimiento.distancia;
+			}else if(movimiento.eje==EJE_Y){
+				y+=movimiento.distancia;
+			}else if(movimiento.eje==EJE_Z){
+				z+=movimiento.distancia;
+			}
+			float i=0f;
+			float tiempo=10f;
+			float ratio=1f/tiempo;
+			while(i<1.0f){
+				Debug.Log("********");
+				i+=Time.deltaTime*ratio;
+				player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),i);
+				//yield return new WaitForSeconds(3f);
+				yield return null;
+			}
+			
+		}
 	}
 }
