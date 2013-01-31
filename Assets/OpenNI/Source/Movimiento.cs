@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Movimiento{
 	public float distancia;
-	public string eje;
+	public string eje="";
 	public float rotacion;
-	public string ejeRotacion;
+	public string ejeRotacion="";
 	
 }

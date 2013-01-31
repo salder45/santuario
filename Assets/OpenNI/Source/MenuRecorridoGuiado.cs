@@ -264,17 +264,15 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		}
 	}
 	void OnCollisionStay(Collision collision){
-		Debug.Log("Permanece en el boton");
 		if(contador>50f){
 			seleccionarCamara(CAMARA_PLAYER);
 			contador=0f;
-			ejecutaVariosMovimientos(posicionActual,true);
+			avanzar();
 		}		
 		contador++;
 	}
 	
 	void OnCollisionExit(Collision collision){
-		Debug.Log("Colision fuera");
 		contador=0f;
 	}
 	
@@ -286,14 +284,21 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		m01.distancia=30f;
 		m01.eje=EJE_X;
 		movsUno.Add(m01);
-		orden.Add(movsUno);		
+		orden.Add(movsUno);
+		//movimiento2
+		List<Movimiento> movsDos=new List<Movimiento>();
+		Movimiento m10=new Movimiento();
+		m10.ejeRotacion=EJE_Y;
+		//m10.rotacion=0.001f;
+		m10.rotacion=90f;
+		movsDos.Add(m10);
+		orden.Add(movsDos);
 	}
 	
 	void ejecutaVariosMovimientos(int posAc,bool isAvanzar){
 		List<Movimiento> movs=orden[posAc];
 		foreach(Movimiento m in movs){
 			StartCoroutine(ejecutaMovimiento(m,isAvanzar));
-			//ejecutaMovimiento(m,isAvanzar);
 		}
 	}
 	
@@ -302,25 +307,73 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		x=player.transform.position.x;
 		y=player.transform.position.y;
 		z=player.transform.position.z;
+		Debug.Log("*"+movimiento.ejeRotacion+"*");
 		if(isAvanzar){
-			if(movimiento.eje==EJE_X){
-				x+=movimiento.distancia;
-			}else if(movimiento.eje==EJE_Y){
-				y+=movimiento.distancia;
-			}else if(movimiento.eje==EJE_Z){
-				z+=movimiento.distancia;
-			}
-			float i=0f;
-			float tiempo=10f;
-			float ratio=1f/tiempo;
-			while(i<1.0f){
-				Debug.Log("********");
-				i+=Time.deltaTime*ratio;
-				player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),i);
-				//yield return new WaitForSeconds(3f);
-				yield return null;
-			}
-			
+			if(movimiento.ejeRotacion.Equals("")){
+				Debug.Log("Mover");
+				if(movimiento.eje==EJE_X){
+					x+=movimiento.distancia;
+				}else if(movimiento.eje==EJE_Y){
+					y+=movimiento.distancia;
+				}else if(movimiento.eje==EJE_Z){
+					z+=movimiento.distancia;
+				}
+			 	float i=0f;
+				float tiempo=10f;
+				float ratio=1f/tiempo;
+				while(i<1.0f){
+					i+=Time.deltaTime*ratio;
+					player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),i);
+					yield return null;
+				}
+			}else{
+				Debug.Log("Rotar");
+				float xR,yR,zR;
+				xR=player.transform.rotation.x;
+				yR=player.transform.rotation.y;
+				zR=player.transform.rotation.z;
+				
+				if(movimiento.ejeRotacion==EJE_X){
+					xR+=movimiento.rotacion;
+				}else if(movimiento.ejeRotacion==EJE_Y){
+					yR+=movimiento.rotacion;
+				}else if(movimiento.ejeRotacion==EJE_Z){
+					zR+=movimiento.rotacion;
+				}
+				
+				float i=0.5f;
+				float tiempo=2f;
+				float ratio=1f/tiempo;
+				while(i<1.0f){
+					i+=0.2f;
+					player.transform.Rotate(Vector3.Slerp(player.transform.rotation.eulerAngles,new Vector3(xR,yR,zR),i));
+					yield return null;
+					/*
+					i+=Time.deltaTime*ratio;
+					player.transform.rotation=Quaternion.Slerp(player.transform.rotation,new Quaternion(xR,yR,zR,0f),i);
+					yield return null;
+					*/
+				}
+			}			
 		}
+	}
+	//Movimientos
+	void avanzar(){
+		ejecutaVariosMovimientos(posicionActual,true);
+		posicionActual++;
+	}
+	
+	void retroceder(){
+		ejecutaVariosMovimientos(posicionActual,false);
+		posicionActual--;
+	}
+	//Audio
+	void repetir(){		
+	}
+	
+	void detener(){		
+	}	
+	
+	void salir(){
 	}
 }
