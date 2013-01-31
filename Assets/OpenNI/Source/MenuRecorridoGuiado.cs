@@ -290,7 +290,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		Movimiento m10=new Movimiento();
 		m10.ejeRotacion=EJE_Y;
 		//m10.rotacion=0.001f;
-		m10.rotacion=90f;
+		m10.rotacion=-90f;
 		movsDos.Add(m10);
 		orden.Add(movsDos);
 	}
@@ -307,7 +307,6 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		x=player.transform.position.x;
 		y=player.transform.position.y;
 		z=player.transform.position.z;
-		Debug.Log("*"+movimiento.ejeRotacion+"*");
 		if(isAvanzar){
 			if(movimiento.ejeRotacion.Equals("")){
 				Debug.Log("Mover");
@@ -329,31 +328,50 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 			}else{
 				Debug.Log("Rotar");
 				float xR,yR,zR;
+				xR=0f;
+				yR=0f;
+				zR=0f;
+				float i=100f;
+				float avance=movimiento.rotacion/i;
+				float tmp=0;
+				while(tmp<i){
+					if(movimiento.ejeRotacion==EJE_X){
+						xR=avance;
+					}else if(movimiento.ejeRotacion==EJE_Y){
+						yR=avance;
+					}else if(movimiento.ejeRotacion==EJE_Z){
+						zR=avance;
+					}
+					tmp++;
+					Debug.Log(player.transform.rotation.x+" = "+player.transform.rotation.y+" = "+player.transform.rotation.z);
+					//player.transform.rotation=Quaternion.Slerp(player.transform.rotation,new Quaternion(xR,yR,zR,0f),Time.deltaTime*2f*tmp);
+					player.transform.Rotate(Vector3.Slerp(player.transform.eulerAngles,new Vector3(xR,yR,zR),1));
+					yield return null;
+				}
+				/*
+				//xR=0f;
 				xR=player.transform.rotation.x;
+				//yR=0f;
 				yR=player.transform.rotation.y;
+				//zR=0f;
 				zR=player.transform.rotation.z;
-				
-				if(movimiento.ejeRotacion==EJE_X){
-					xR+=movimiento.rotacion;
-				}else if(movimiento.ejeRotacion==EJE_Y){
-					yR+=movimiento.rotacion;
-				}else if(movimiento.ejeRotacion==EJE_Z){
-					zR+=movimiento.rotacion;
-				}
-				
-				float i=0.5f;
-				float tiempo=2f;
-				float ratio=1f/tiempo;
-				while(i<1.0f){
-					i+=0.2f;
-					player.transform.Rotate(Vector3.Slerp(player.transform.rotation.eulerAngles,new Vector3(xR,yR,zR),i));
+				float i=10f;
+				float avance=movimiento.rotacion/i;
+				float tmp=0;
+				while(tmp<i){
+					if(movimiento.ejeRotacion==EJE_X){
+						xR+=avance;
+					}else if(movimiento.ejeRotacion==EJE_Y){
+						yR+=avance;
+					}else if(movimiento.ejeRotacion==EJE_Z){
+						zR+=avance;
+					}
+					tmp++;
+					Debug.Log(player.transform.rotation.x+" = "+player.transform.rotation.y+" = "+player.transform.rotation.z);
+					player.transform.rotation=Quaternion.Slerp(player.transform.rotation,new Quaternion(xR,yR,zR,0f),Time.deltaTime*2f*tmp);
 					yield return null;
-					/*
-					i+=Time.deltaTime*ratio;
-					player.transform.rotation=Quaternion.Slerp(player.transform.rotation,new Quaternion(xR,yR,zR,0f),i);
-					yield return null;
-					*/
 				}
+				*/			
 			}			
 		}
 	}
