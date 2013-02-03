@@ -74,6 +74,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	//Lista del orden 
 	public List<List<Movimiento>> orden;
 	public List<Movimiento> movimientos;
+	bool estaCorriendo=false;
 	
 	// Use this for initialization
 	void Start(){
@@ -280,36 +281,63 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		orden=new List<List<Movimiento>>();		
 		//Movimiento1
 		List<Movimiento> movsUno=new List<Movimiento>();
-		Movimiento m01=new Movimiento();
-		m01.distancia=30f;
-		m01.eje=EJE_X;
-		movsUno.Add(m01);
+		Movimiento mv1=new Movimiento();
+		mv1.distancia=30f;
+		mv1.eje=EJE_X;
+		movsUno.Add(mv1);
 		orden.Add(movsUno);
 		//movimiento2
 		List<Movimiento> movsDos=new List<Movimiento>();
-		Movimiento m10=new Movimiento();
-		m10.ejeRotacion=EJE_Y;
-		//m10.rotacion=0.001f;
-		m10.rotacion=-90f;
-		movsDos.Add(m10);
+		Movimiento mv2=new Movimiento();
+		mv2.ejeRotacion=EJE_Y;
+		mv2.rotacion=90f;		
+		movsDos.Add(mv2);
+		//
+		Movimiento mv2Uno=new Movimiento();
+		mv2Uno.eje=EJE_Z;
+		mv2Uno.distancia=-10f;
+		movsDos.Add(mv2Uno);
+		//
+		Movimiento mv2Dos=new Movimiento();
+		mv2Dos.ejeRotacion=EJE_Y;
+		mv2Dos.rotacion=-90f;
+		movsDos.Add(mv2Dos);
+		
 		orden.Add(movsDos);
+		
 	}
 	
 	void ejecutaVariosMovimientos(int posAc,bool isAvanzar){
 		List<Movimiento> movs=orden[posAc];
-		foreach(Movimiento m in movs){
-			StartCoroutine(ejecutaMovimiento(m,isAvanzar));
+		
+		int i=0;
+		while(i<movs.Count){
+			Debug.Log(!estaCorriendo+" ** "+i);
+			if(!estaCorriendo){
+				StartCoroutine(ejecutaMovimiento(movs[i],isAvanzar));
+				i++;
+			}
+			//Debug.Log(i+" Esta Corriendo "+estaCorriendo);
 		}
+		
+		/*
+		foreach(Movimiento m in movs){
+			Debug.Log(estaCorriendo);
+			StartCoroutine(ejecutaMovimiento(m,isAvanzar));			
+		}
+		*/
+				
 	}
 	
 	IEnumerator ejecutaMovimiento(Movimiento movimiento,bool isAvanzar){
+		estaCorriendo=true;
 		float x,y,z;
 		x=player.transform.position.x;
 		y=player.transform.position.y;
 		z=player.transform.position.z;
 		if(isAvanzar){
 			if(movimiento.ejeRotacion.Equals("")){
-				Debug.Log("Mover");
+				//Debug.Log("Mover");
 				if(movimiento.eje==EJE_X){
 					x+=movimiento.distancia;
 				}else if(movimiento.eje==EJE_Y){
@@ -324,9 +352,10 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 					i+=Time.deltaTime*ratio;
 					player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),i);
 					yield return null;
+					estaCorriendo=false;
 				}
 			}else{
-				Debug.Log("Rotar");
+				//Debug.Log("Rotar");
 				float xR,yR,zR;
 				xR=0f;
 				yR=0f;
@@ -343,35 +372,10 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 						zR=avance;
 					}
 					tmp++;
-					Debug.Log(player.transform.rotation.x+" = "+player.transform.rotation.y+" = "+player.transform.rotation.z);
-					//player.transform.rotation=Quaternion.Slerp(player.transform.rotation,new Quaternion(xR,yR,zR,0f),Time.deltaTime*2f*tmp);
 					player.transform.Rotate(Vector3.Slerp(player.transform.eulerAngles,new Vector3(xR,yR,zR),1));
 					yield return null;
+					estaCorriendo=false;
 				}
-				/*
-				//xR=0f;
-				xR=player.transform.rotation.x;
-				//yR=0f;
-				yR=player.transform.rotation.y;
-				//zR=0f;
-				zR=player.transform.rotation.z;
-				float i=10f;
-				float avance=movimiento.rotacion/i;
-				float tmp=0;
-				while(tmp<i){
-					if(movimiento.ejeRotacion==EJE_X){
-						xR+=avance;
-					}else if(movimiento.ejeRotacion==EJE_Y){
-						yR+=avance;
-					}else if(movimiento.ejeRotacion==EJE_Z){
-						zR+=avance;
-					}
-					tmp++;
-					Debug.Log(player.transform.rotation.x+" = "+player.transform.rotation.y+" = "+player.transform.rotation.z);
-					player.transform.rotation=Quaternion.Slerp(player.transform.rotation,new Quaternion(xR,yR,zR,0f),Time.deltaTime*2f*tmp);
-					yield return null;
-				}
-				*/			
 			}			
 		}
 	}
