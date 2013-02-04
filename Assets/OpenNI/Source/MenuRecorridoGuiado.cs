@@ -268,7 +268,11 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		if(contador>50f){
 			seleccionarCamara(CAMARA_PLAYER);
 			contador=0f;
-			avanzar();
+			if(posicionActual<6){
+				retroceder();
+			}else{
+				avanzar();
+			}
 		}		
 		contador++;
 	}
@@ -304,11 +308,115 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		movsDos.Add(mv2Dos);
 		
 		Movimiento mv2Tres=new Movimiento();
-		mv2Tres.distancia=25f;
+		mv2Tres.distancia=20f;
 		mv2Tres.eje=EJE_X;
 		movsDos.Add(mv2Tres);
 		
+		Movimiento mv2Cuatro=new Movimiento();
+		mv2Cuatro.ejeRotacion=EJE_Y;
+		mv2Cuatro.rotacion=-90f;		
+		movsDos.Add(mv2Cuatro);
+		
+		Movimiento mv2Cinco=new Movimiento();
+		mv2Cinco.eje=EJE_Z;
+		mv2Cinco.distancia=7f;
+		movsDos.Add(mv2Cinco);
+		
+		Movimiento mv2Seis=new Movimiento();
+		mv2Seis.ejeRotacion=EJE_Y;
+		mv2Seis.rotacion=90f;		
+		movsDos.Add(mv2Seis);
+		
 		orden.Add(movsDos);
+		//
+		List<Movimiento> movsTres=new List<Movimiento>();
+		Movimiento mv3Uno=new Movimiento();
+		mv3Uno.ejeRotacion=EJE_Y;
+		mv3Uno.rotacion=90f;		
+		movsTres.Add(mv3Uno);
+		
+		Movimiento mv3Dos=new Movimiento();
+		mv3Dos.eje=EJE_Z;
+		mv3Dos.distancia=-5f;		
+		movsTres.Add(mv3Dos);
+		
+		Movimiento mv3Tres=new Movimiento();
+		mv3Tres.ejeRotacion=EJE_Y;
+		mv3Tres.rotacion=-90f;		
+		movsTres.Add(mv3Tres);
+		
+		Movimiento mv3Cuatro=new Movimiento();
+		mv3Cuatro.eje=EJE_X;
+		mv3Cuatro.distancia=15f;		
+		movsTres.Add(mv3Cuatro);
+		
+		Movimiento mv3Cinco=new Movimiento();
+		mv3Cinco.ejeRotacion=EJE_Y;
+		mv3Cinco.rotacion=-90f;		
+		movsTres.Add(mv3Cinco);
+		
+		Movimiento mv3Seis=new Movimiento();
+		mv3Seis.eje=EJE_Z;
+		mv3Seis.distancia=5f;		
+		movsTres.Add(mv3Seis);
+		
+		Movimiento mv3Siete=new Movimiento();
+		mv3Siete.ejeRotacion=EJE_Y;
+		mv3Siete.rotacion=90f;		
+		movsTres.Add(mv3Siete);
+		
+		Movimiento mv3Ocho=new Movimiento();
+		mv3Ocho.eje=EJE_X;
+		mv3Ocho.distancia=5f;		
+		movsTres.Add(mv3Ocho);
+		
+		Movimiento mv3Nueve=new Movimiento();
+		mv3Nueve.eje=EJE_X;
+		mv3Nueve.distancia=10f;		
+		movsTres.Add(mv3Nueve);
+		
+		orden.Add(movsTres);
+		//
+		List<Movimiento> movsCuatro=new List<Movimiento>();
+		
+		Movimiento mv4Uno=new Movimiento();
+		mv4Uno.ejeRotacion=EJE_Y;
+		mv4Uno.rotacion=90f;		
+		movsCuatro.Add(mv4Uno);
+		
+		Movimiento mv4Dos=new Movimiento();
+		mv4Dos.eje=EJE_Z;
+		mv4Dos.distancia=2f;		
+		movsCuatro.Add(mv4Dos);		
+		
+		orden.Add(movsCuatro);
+		//
+		List<Movimiento> movsCinco=new List<Movimiento>();
+		Movimiento mv5Uno=new Movimiento();
+		mv5Uno.ejeRotacion=EJE_Y;
+		mv5Uno.rotacion=180f;		
+		movsCinco.Add(mv5Uno);
+		
+		Movimiento mv5Dos=new Movimiento();
+		mv5Dos.eje=EJE_Z;
+		mv5Dos.distancia=-2f;		
+		movsCinco.Add(mv5Dos);
+		
+		orden.Add(movsCinco);
+		//
+		List<Movimiento> movsSeis=new List<Movimiento>();
+		
+		Movimiento mv6Uno=new Movimiento();
+		mv6Uno.ejeRotacion=EJE_Y;
+		mv6Uno.rotacion=90f;		
+		movsSeis.Add(mv6Uno);
+		
+		Movimiento mv6Dos=new Movimiento();
+		mv6Dos.eje=EJE_X;
+		mv6Dos.distancia=10f;		
+		movsSeis.Add(mv6Dos);
+		
+		orden.Add(movsSeis);
 		
 	}
 	
@@ -343,28 +451,10 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 				}else if(movimiento.eje==EJE_Z){
 					z+=movimiento.distancia;
 				}
-				/*
-			 	float i=0f;
-				float tiempo=10f;
-				float ratio=1f/tiempo;
-				while(i<1.0f){
-					Debug.Log("Esta Moviendose");
-					i+=Time.deltaTime*ratio;
-					player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),i);
-					if(i>0.85f){
-						i=1.1f;
-					}
-					
-					//if(player.transform.position.Equals(new Vector3(x,y,z))){
-					//	i=1.1f;
-					//}
-					
-					yield return null;					
-				}*/
-				
-				float i=100;
+							
+				float i=100f;
 				float avance=movimiento.distancia/i;
-				float tmp=0;
+				float tmp=0;  
 				while(tmp<i){
 					player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),tmp*0.01f);
 					tmp++;
