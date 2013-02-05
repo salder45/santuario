@@ -268,7 +268,8 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		if(contador>50f){
 			seleccionarCamara(CAMARA_PLAYER);
 			contador=0f;
-			if(posicionActual<6){
+			Debug.Log("********* "+posicionActual);
+			if(posicionActual>5){
 				retroceder();
 			}else{
 				avanzar();
@@ -421,7 +422,27 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	}
 	
 	IEnumerator ejecutaVariosMovimientos(int posAc,bool isAvanzar){
+		//checar el regreso
 		List<Movimiento> movs=orden[posAc];
+		if(posAc>5){
+			Debug.Log("Debe Retroceder");
+			List<Movimiento> tmp=new List<Movimiento>();
+			Movimiento voltea=new Movimiento();
+			voltea.ejeRotacion=EJE_Y;
+			voltea.rotacion=180f;
+			tmp.Add(voltea);
+			for(int conta=movs.Count-1;conta>=0;conta--){
+				Movimiento m=movs[conta];
+				if(m.ejeRotacion.Equals("")){
+					m.rotacion=(m.rotacion*-1f);
+				}else {
+					m.rotacion=(m.distancia*-1f);
+				}
+				tmp.Add(m);
+			}
+			tmp.Add(voltea);
+			movs=tmp;
+		}
 		
 		int i=0;
 		while(i<movs.Count){
@@ -441,49 +462,48 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		x=player.transform.position.x;
 		y=player.transform.position.y;
 		z=player.transform.position.z;
-		if(isAvanzar){
-			if(movimiento.ejeRotacion.Equals("")){
-				//Debug.Log("Mover");
-				if(movimiento.eje==EJE_X){
-					x+=movimiento.distancia;
-				}else if(movimiento.eje==EJE_Y){
-					y+=movimiento.distancia;
-				}else if(movimiento.eje==EJE_Z){
-					z+=movimiento.distancia;
+		if(movimiento.ejeRotacion.Equals("")){
+			//Debug.Log("Mover");
+			if(movimiento.eje==EJE_X){
+				x+=movimiento.distancia;
+			}else if(movimiento.eje==EJE_Y){
+				y+=movimiento.distancia;
+			}else if(movimiento.eje==EJE_Z){
+				z+=movimiento.distancia;
+			}
+						
+			float i=100f;
+			float avance=movimiento.distancia/i;
+			float tmp=0;  
+			while(tmp<i){
+				player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),tmp*0.01f);
+				tmp++;
+				yield return null;	
+			}
+		}else{
+			//Debug.Log("Rotar");
+			float xR,yR,zR;
+			xR=0f;
+			yR=0f;
+			zR=0f;
+			float i=100f;
+			float avance=movimiento.rotacion/i;
+			float tmp=0;
+			while(tmp<i){
+				Debug.Log("Esta rotando");
+				if(movimiento.ejeRotacion==EJE_X){
+					xR=avance;
+				}else if(movimiento.ejeRotacion==EJE_Y){
+					yR=avance;
+				}else if(movimiento.ejeRotacion==EJE_Z){
+					zR=avance;
 				}
-							
-				float i=100f;
-				float avance=movimiento.distancia/i;
-				float tmp=0;  
-				while(tmp<i){
-					player.transform.position=Vector3.Lerp(player.transform.position,new Vector3(x,y,z),tmp*0.01f);
-					tmp++;
-					yield return null;	
-				}
-			}else{
-				//Debug.Log("Rotar");
-				float xR,yR,zR;
-				xR=0f;
-				yR=0f;
-				zR=0f;
-				float i=100f;
-				float avance=movimiento.rotacion/i;
-				float tmp=0;
-				while(tmp<i){
-					Debug.Log("Esta rotando");
-					if(movimiento.ejeRotacion==EJE_X){
-						xR=avance;
-					}else if(movimiento.ejeRotacion==EJE_Y){
-						yR=avance;
-					}else if(movimiento.ejeRotacion==EJE_Z){
-						zR=avance;
-					}
-					tmp++;
-					player.transform.Rotate(Vector3.Slerp(player.transform.eulerAngles,new Vector3(xR,yR,zR),1));
-					yield return null;					
-				}
-			}			
-		}
+				tmp++;
+				player.transform.Rotate(Vector3.Slerp(player.transform.eulerAngles,new Vector3(xR,yR,zR),1));
+				yield return null;					
+			}
+		}			
+		
 		estaCorriendo=false;
 	}
 
@@ -494,6 +514,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	}
 	
 	void retroceder(){
+		Debug.Log("Retroceder");
 		ejecutaVariosMovimientos(posicionActual,false);
 		posicionActual--;
 	}
