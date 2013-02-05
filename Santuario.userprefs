@@ -6,7 +6,7 @@
       <File FileName="Assets/OpenNI/Source/PlayerController.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/MuebleController.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/MenuController.cs" Line="1" Column="1" />
-      <File FileName="Assets/OpenNI/Source/MenuRecorridoGuiado.cs" Line="490" Column="39" />
+      <File FileName="Assets/OpenNI/Source/MenuRecorridoGuiado.cs" Line="462" Column="33" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

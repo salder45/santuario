@@ -268,7 +268,6 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		if(contador>50f){
 			seleccionarCamara(CAMARA_PLAYER);
 			contador=0f;
-			Debug.Log("********* "+posicionActual);
 			if(posicionActual>5){
 				retroceder();
 			}else{
@@ -421,42 +420,56 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		
 	}
 	
-	IEnumerator ejecutaVariosMovimientos(int posAc,bool isAvanzar){
-		//checar el regreso
+	IEnumerator ejecutaVariosMovimientos(int posAc){
 		List<Movimiento> movs=orden[posAc];
-		if(posAc>5){
-			Debug.Log("Debe Retroceder");
-			List<Movimiento> tmp=new List<Movimiento>();
-			Movimiento voltea=new Movimiento();
-			voltea.ejeRotacion=EJE_Y;
-			voltea.rotacion=180f;
-			tmp.Add(voltea);
-			for(int conta=movs.Count-1;conta>=0;conta--){
-				Movimiento m=movs[conta];
-				if(m.ejeRotacion.Equals("")){
-					m.rotacion=(m.rotacion*-1f);
-				}else {
-					m.rotacion=(m.distancia*-1f);
-				}
-				tmp.Add(m);
-			}
-			tmp.Add(voltea);
-			movs=tmp;
-		}
-		
 		int i=0;
 		while(i<movs.Count){
 			if(!estaCorriendo){
-				StartCoroutine(ejecutaMovimiento(movs[i],isAvanzar));
+				StartCoroutine(ejecutaMovimiento(movs[i]));
 				i++;				
 			}else{
-				Debug.Log("Espera");
 				yield return new WaitForSeconds(0.0001f);
 			}
 		}
 	}
 	
-	IEnumerator ejecutaMovimiento(Movimiento movimiento,bool isAvanzar){
+	IEnumerator ejecutaVariosMovimientosRegresar(int posAc){
+		//Debug.Log(posAc+" ** "+orden.Count);
+		if(posAc>(orden.Count-1)){
+			//Debug.Log("Es el ultimo");
+			posAc=posAc-1;
+			posicionActual=posicionActual-1;
+		}
+		
+		List<Movimiento> movs=orden[posAc];
+		Movimiento voltea=new Movimiento();
+		voltea.ejeRotacion=EJE_Y;
+		voltea.rotacion=180f;
+		StartCoroutine(ejecutaMovimiento(voltea));
+		int i=movs.Count-1;
+		while(i>=0){
+			if(!estaCorriendo){
+				Movimiento m=movs[i];
+				//Debug.Log(m.eje+" ** "+m.distancia);
+				//Debug.Log(m.ejeRotacion+" ** "+m.rotacion);
+				
+				if(m.ejeRotacion.Equals("")){
+					m.distancia=(m.distancia*-1.0f);
+				}else {
+					m.rotacion=(m.rotacion*-1.0f);					
+				}
+				//Debug.Log(m.eje+" ++ "+m.distancia);
+				//Debug.Log(m.ejeRotacion+" ++ "+m.rotacion);
+				StartCoroutine(ejecutaMovimiento(m));
+				i--;				
+			}else{
+				yield return new WaitForSeconds(0.0001f);
+			}
+		}		
+		StartCoroutine(ejecutaMovimiento(voltea));		
+	}
+	
+	IEnumerator ejecutaMovimiento(Movimiento movimiento){
 		estaCorriendo=true;
 		float x,y,z;
 		x=player.transform.position.x;
@@ -490,7 +503,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 			float avance=movimiento.rotacion/i;
 			float tmp=0;
 			while(tmp<i){
-				Debug.Log("Esta rotando");
+				//Debug.Log("Esta rotando");
 				if(movimiento.ejeRotacion==EJE_X){
 					xR=avance;
 				}else if(movimiento.ejeRotacion==EJE_Y){
@@ -509,13 +522,13 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 
 	//Movimientos
 	void avanzar(){
-		StartCoroutine(ejecutaVariosMovimientos(posicionActual,true));
+		StartCoroutine(ejecutaVariosMovimientos(posicionActual));
 		posicionActual++;
 	}
 	
 	void retroceder(){
 		Debug.Log("Retroceder");
-		ejecutaVariosMovimientos(posicionActual,false);
+		StartCoroutine(ejecutaVariosMovimientosRegresar(posicionActual));
 		posicionActual--;
 	}
 	//Audio
