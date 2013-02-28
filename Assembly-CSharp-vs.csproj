@@ -47,7 +47,7 @@
      <Compile Include="Assets\Altar\RandomRangeTransform.cs" />
      <Compile Include="Assets\ClickMenu.cs" />
      <Compile Include="Assets\CubeController.cs" />
-     <Compile Include="Assets\Intro.cs" />
+     <Compile Include="Assets\OpenNI\Source\Intro.cs" />
      <Compile Include="Assets\OpenNI\Source\MenuController.cs" />
      <Compile Include="Assets\OpenNI\Source\MenuRecorridoGuiado.cs" />
      <Compile Include="Assets\OpenNI\Source\Movimiento.cs" />

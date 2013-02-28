@@ -52,8 +52,8 @@ public class MenuController : MonoBehaviour {
 	private float zMedia=0f;
 	
 	
-	//Click object audioSource
-	public AudioSource clickAudio;
+
+	
 	
 	//Contadores para el fade
 	private float clickCount = 0;
@@ -219,7 +219,7 @@ public class MenuController : MonoBehaviour {
 		//codigo a ver donde se acomoda
 		if(kinectManoZ<(zInicial-250f)){
 			Debug.Log("Click");
-			clickAudio.Play();
+			
 			gameObject.transform.Translate(0f,0f,6f);
 			
 		}
@@ -266,53 +266,54 @@ public class MenuController : MonoBehaviour {
 	}
 	
 	void OnCollisionStay(Collision collision){
-		Debug.Log("CollisionStay"+clickCount);
-		if(clickCount<200){
+		//Debug.Log("CollisionStay"+clickCount);
+		Debug.Log(collision.gameObject.name);
+		if(clickCount<100){
 			
 			
-			if(clickCount>20){
+			if(clickCount>10){
 				GameObject goC = GameObject.Find("c1");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>45){
+			if(clickCount>20){
 				GameObject goC = GameObject.Find("c2");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>70){
+			if(clickCount>30){
 				GameObject goC = GameObject.Find("c3");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>95){
+			if(clickCount>40){
 				GameObject goC = GameObject.Find("c4");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>120){
+			if(clickCount>50){
 				GameObject goC = GameObject.Find("c5");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>145){
+			if(clickCount>60){
 				GameObject goC = GameObject.Find("c6");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>170){
+			if(clickCount>80){
 				GameObject goC = GameObject.Find("c7");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
 				goC.renderer.material.color = color;
 			}
-			if(clickCount>195){
+			if(clickCount>95){
 				GameObject goC = GameObject.Find("c8");
 				Color color = goC.renderer.material.color;
 				color.a = 1f;
@@ -320,6 +321,7 @@ public class MenuController : MonoBehaviour {
 			}
 			
 		}else{
+			
 			siguienteNivel = collision.gameObject.name;
 			exitCount = 0;
 			collision.collider.enabled= false;

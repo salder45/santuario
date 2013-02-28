@@ -5,6 +5,7 @@ using NITE;
 using OpenNI;
 using System;
 
+[RequireComponent(typeof(AudioSource))]
 public class MenuRecorridoGuiado : MonoBehaviour {
 	//KINECT
 	private readonly string XML_CONFIG=@".//OpenNI.xml";
@@ -76,12 +77,32 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 	public List<Movimiento> movimientos;
 	bool estaCorriendo=false;
 	
+	//Cnotador del click
+	private float clickCount = 0;
+	private float exitCount=100;
+	private string siguienteNivel;
+	
+	public AudioClip clip1;
+	public AudioClip clip2;
+	public AudioClip clip3;
+	public AudioClip clip4;
+	public AudioClip clip5;
+	public AudioClip clip6;
+	public AudioClip clip7;
+	private String playMemory;
+	private bool isMenu=false;
+	
+	
 	// Use this for initialization
 	void Start(){
 		player=GameObject.Find("Player");
-		camaraPlayer=GameObject.Find(CAMARA_PLAYER).camera;		
+		Debug.Log ("---------"+player.transform.localPosition);
 		camaraMenu=GameObject.Find(CAMARA_MENU).camera;
-		seleccionarCamara(camaraMenu.ToString());
+		camaraPlayer=GameObject.Find(CAMARA_PLAYER).camera;	
+		seleccionarCamara(CAMARA_PLAYER);
+		playMemory="1";
+		audio.clip = clip1;
+		audio.Play();
 		puntoInicial=GameObject.Find("puntoInicial");
 		puntoFinal=GameObject.Find("puntoFinal");
 		determinaEspacioUnity();
@@ -102,6 +123,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 			throw new Exception("Nodo de Gestos no encontrado");
 		}
 		
+		fadeCountCircle();
 		//handdlers
 		this.hands.HandCreate+=hands_HandCreate;
 		this.hands.HandUpdate+=hands_HandUpdate;
@@ -113,11 +135,46 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		this.gesture.StartGenerating();
 		//iniciaPuntos
 		iniciaPuntos();
+		
+		
+		
+		
+		
 }
 	
 	// Update is called once per frame
 	void Update (){
 		this.context.WaitOneUpdateAll(this.depth);
+		
+		if(!isMenu){
+			if(!audio.isPlaying){
+				playAudioNext(playMemory);
+				
+			}
+		}
+	}
+	
+	void playAudioNext(String memoria){
+		Debug.Log ("----------"+memoria);
+		
+		switch (memoria){
+			case "0": audio.clip =clip1; playMemory="1"; audio.Play(); avanzar();
+			break;
+			case "1": audio.clip =clip2; playMemory="2";  audio.Play(); avanzar();
+			break;
+			case "2": audio.clip =clip3;   playMemory="3";audio.Play(); avanzar();
+			break;
+			case "3":audio.clip =clip4;   playMemory="4";audio.Play(); avanzar();
+			break;
+			case "4": audio.clip =clip5;   playMemory="5";audio.Play(); avanzar();
+			break;
+			case "5": audio.clip =clip6;   playMemory="6";audio.Play(); avanzar();
+			break;
+			case "6": audio.clip =clip7;   playMemory="0";audio.Play(); avanzar();
+			break;
+			
+		}
+		
 	}
 	
 	void OnApplicationQuit(){
@@ -150,6 +207,9 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		if(e.Gesture==WAVE){
 			this.hands.StartTracking(e.EndPosition);
 		}else if(e.Gesture==CLICK){
+			Debug.Log("Pausa");
+			isMenu=true;
+			audio.Pause();
 			seleccionarCamara(CAMARA_MENU);
 		}
 	}
@@ -259,13 +319,14 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		if(nombre==CAMARA_PLAYER){
 			camaraPlayer.enabled=true;
 			camaraMenu.enabled=false;
+			isMenu=false;
 		}else {
 			camaraPlayer.enabled=false;
 			camaraMenu.enabled=true;
 		}
 	}
 	void OnCollisionStay(Collision collision){
-		if(contador>50f){
+		/*if(contador>50f){
 			seleccionarCamara(CAMARA_PLAYER);
 			contador=0f;
 			if(posicionActual>5){
@@ -274,11 +335,104 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 				avanzar();
 			}
 		}		
-		contador++;
+		contador++;*/
+			Debug.Log(clickCount);
+			if(clickCount<100){
+			
+			
+			if(clickCount>10){
+				GameObject goC = GameObject.Find("c1");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>20){
+				GameObject goC = GameObject.Find("c2");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>30){
+				GameObject goC = GameObject.Find("c3");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>40){
+				GameObject goC = GameObject.Find("c4");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>50){
+				GameObject goC = GameObject.Find("c5");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>60){
+				GameObject goC = GameObject.Find("c6");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>80){
+				GameObject goC = GameObject.Find("c7");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			if(clickCount>95){
+				GameObject goC = GameObject.Find("c8");
+				Color color = goC.renderer.material.color;
+				color.a = 1f;
+				goC.renderer.material.color = color;
+			}
+			
+		}else{
+			
+			if(collision.gameObject.name=="botonAtras"){
+				audio.Stop();
+				switch (playMemory){
+					case "0": audio.clip =clip1; playMemory="1"; audio.Play(); retroceder();
+					break;
+					case "1": audio.clip =clip2; playMemory="1";  audio.Play(); retroceder();
+					break;
+					case "2": audio.clip =clip3;   playMemory="2";audio.Play(); retroceder();
+					break;
+					case "3":audio.clip =clip4;   playMemory="3";audio.Play(); retroceder();
+					break;
+					case "4": audio.clip =clip5;   playMemory="4";audio.Play(); retroceder();
+					break;
+					case "5": audio.clip =clip6;   playMemory="5";audio.Play(); retroceder();
+					break;
+					case "6": audio.clip =clip7;   playMemory="6";audio.Play(); retroceder();
+					break;
+					
+				}
+				seleccionarCamara(CAMARA_PLAYER);
+			}else if(collision.gameObject.name=="botonDelante"){
+				audio.Stop();
+				seleccionarCamara(CAMARA_PLAYER);
+			}else if(collision.gameObject.name=="botonRegresar"){
+				continuar();
+			}else if(collision.gameObject.name=="botonSalir"){
+				salir();
+			}
+			 
+			//exitCount = 0;
+			//collision.collider.enabled= false;
+			
+		}
+			
+		
+		clickCount++;
 	}
 	
 	void OnCollisionExit(Collision collision){
 		contador=0f;
+		fadeCountCircle();
+		clickCount=0;
 	}
 	
 	void iniciaPuntos(){
@@ -522,6 +676,7 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 
 	//Movimientos
 	void avanzar(){
+		Debug.Log("avanzar");
 		StartCoroutine(ejecutaVariosMovimientos(posicionActual));
 		posicionActual++;
 	}
@@ -532,12 +687,29 @@ public class MenuRecorridoGuiado : MonoBehaviour {
 		posicionActual--;
 	}
 	//Audio
-	void repetir(){		
+	void continuar(){	
+		Debug.Log("continuar");
+		seleccionarCamara(CAMARA_PLAYER);
+		audio.Play();
 	}
 	
-	void detener(){		
+	void detener(){
+		Debug.Log("detener");
 	}	
 	
 	void salir(){
+		Debug.Log("salir");
 	}	
+	
+	void fadeCountCircle(){
+		int number=1;
+		while(number<=8){
+			string nameC = "c"+number;
+			GameObject goC = GameObject.Find(nameC);
+			Color color = goC.renderer.material.color;
+			color.a = 0f;
+			goC.renderer.material.color = color;
+			number++;
+		}
+	}
 }
