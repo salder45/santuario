@@ -47,6 +47,7 @@
      <Compile Include="Assets\Altar\RandomRangeTransform.cs" />
      <Compile Include="Assets\ClickMenu.cs" />
      <Compile Include="Assets\CubeController.cs" />
+     <Compile Include="Assets\OpenNI\Source\GuiadoIT.cs" />
      <Compile Include="Assets\OpenNI\Source\Intro.cs" />
      <Compile Include="Assets\OpenNI\Source\MenuController.cs" />
      <Compile Include="Assets\OpenNI\Source\MenuRecorridoGuiado.cs" />
@@ -54,6 +55,7 @@
      <Compile Include="Assets\OpenNI\Source\MuebleController.cs" />
      <Compile Include="Assets\OpenNI\Source\PlayerController.cs" />
      <Compile Include="Assets\candle\RandomRangePointLight.cs" />
+     <Compile Include="Assets\iTween\Plugins\iTween.cs" />
      <None Include="Assets\smoke&amp;fire\Particle Sep-Alpha Blend.shader" />
  <Reference Include="Library\ScriptAssemblies\Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
