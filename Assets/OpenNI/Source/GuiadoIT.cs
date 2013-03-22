@@ -21,13 +21,13 @@ public class GuiadoIT : MonoBehaviour {
 	private Vector3 VECTOR_ACTUAL=Vector3.zero;
 	GameObject player;
 	//Posiciones a Mirar
-	public GameObject uno;
-	public GameObject dos;
-	private Vector3 tres=new Vector3(25.71755f,-1.087024f,-8.032457f);
-	private Vector3 cuatro=new Vector3(18f,0.6261804f,0f);
-	private Vector3 cinco=new Vector3(35.02586f,-1.719948f,-3.418796f);
-	private Vector3 seis=Vector3.zero;
-	private Vector3 siete=Vector3.zero;
+	private Vector3 uno=Vector3.zero;
+	private Vector3 dos=new Vector3(-25.07944f,1.86326f,-0.07589531f);
+	private Vector3 tres=new Vector3(-10.47053f,0.7997839f,0.2008085f);
+	private Vector3 cuatro=new Vector3(18.13391f,1.62014f,0.05215108f);
+	private Vector3 cinco=new Vector3(10.02586f,1.4096f,-3.418796f);
+	private Vector3 seis=new Vector3(10f,2.038217f,3.5f);
+	private Vector3 siete=new Vector3(24.97611f,1.429089f,0.01680589f);
 	
 	//Audios
 	public AudioClip clip1;
@@ -85,11 +85,11 @@ public class GuiadoIT : MonoBehaviour {
 		Debug.Log ("----------"+memoria);		
 		switch (memoria){
 			case "1": audio.clip =clip1; playMemory="2"; audio.Play();
-			VECTOR_ACTUAL=uno.transform.position;
+			VECTOR_ACTUAL=uno;
 			NOMBRE_CAMINO=NOMBRE_CAMINO_UNO;
 			break;
 			case "2": audio.clip =clip2; playMemory="3";  audio.Play();
-			VECTOR_ACTUAL=dos.transform.position;
+			VECTOR_ACTUAL=dos;
 			NOMBRE_CAMINO=NOMBRE_CAMINO_DOS;
 			break;
 			case "3": audio.clip =clip3;   playMemory="4";audio.Play();
