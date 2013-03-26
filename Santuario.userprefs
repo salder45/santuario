@@ -2,12 +2,13 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/OpenNI/Source/GuiadoIT.cs">
     <Files>
+      <File FileName="../../Downloads/hover Script (1).js" Line="16" Column="2" />
       <File FileName="Assets/OpenNI/Source/MenuController.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/MuebleController.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/Movimiento.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/PlayerController.cs" Line="1" Column="1" />
       <File FileName="Assets/OpenNI/Source/MenuRecorridoGuiado.cs" Line="1" Column="1" />
-      <File FileName="Assets/OpenNI/Source/GuiadoIT.cs" Line="92" Column="40" />
+      <File FileName="Assets/OpenNI/Source/GuiadoIT.cs" Line="354" Column="2" />
       <File FileName="Assets/OpenNI/Source/Intro.cs" Line="1" Column="1" />
       <File FileName="Assets/Standard Assets/Character Controllers/Sources/Scripts/ThirdPersonController.js" Line="1" Column="1" />
     </Files>
